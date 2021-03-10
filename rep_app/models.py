@@ -7,15 +7,30 @@ from django.urls import reverse
 class Manager(models.Model):
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    restaurant = models.CharField(max_length=30, blank=True)
 
     def __str__(self):
-        return  self.restaurant + ' - ' + self.user.first_name + ' ' + self.user.last_name
+        return  self.restaurant.name + ' - ' + self.user.first_name + ' ' + self.user.last_name
+
+class OpsDirector(models.Model):
+
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return  self.user.first_name + ' ' + self.user.last_name
+
+class Restaurant(models.Model):
+
+    manager = models.OneToOneField(Manager, on_delete=models.CASCADE)
+    ops_director = models.OneToOneField(OpsDirector, on_delete=models.CASCADE)
+    name = models.CharField(max_length=30)
+
+    def __str__(self):
+        return self.name
 
 class Review(models.Model):
 
     source = models.CharField(max_length=11)
-    restaurant = models.CharField(max_length=30)
+    restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
     title = models.CharField(max_length=50, default='')
     date = models.DateField()
     score = models.IntegerField()
@@ -24,6 +39,7 @@ class Review(models.Model):
     value = models.IntegerField(null=True)
     ambience = models.IntegerField(null=True)
     text = models.TextField(max_length=10000, null=True)
+    link = models.TextField(max_length=300, null=True)
     comment = models.TextField(max_length=10000, null=True)
     replied = models.BooleanField(default=False)
     reviewed = models.BooleanField(default=False)
@@ -36,7 +52,7 @@ class Review(models.Model):
 
 class Note(models.Model):
 
-    restaurant = models.CharField(max_length=30)
+    restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
     text = models.TextField(max_length=1000, default='')
 
     def __str__(self):

@@ -16,6 +16,8 @@ from datetime import date, time, datetime, timedelta
 from statistics import mean
 
 from rep_app.restaurant_list import restaurant_list
+restaurant_list = list(restaurant_list.keys())
+
 from rep_app.emails import AppEmail, NoteNotification
 
 # Date Variables

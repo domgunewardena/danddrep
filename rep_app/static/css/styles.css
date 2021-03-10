@@ -1,0 +1,153 @@
+.table {
+  margin-bottom:0;
+}
+
+/* Breakdown Table */
+
+.breakdown-table td {
+  vertical-align: middle;
+  padding-top:0.5rem;
+  padding-bottom:0.5rem;
+}
+
+.breakdown-table p {
+  font-size: 11px;
+  vertical-align: top;
+  text-align: center;
+  height: 11px;
+  padding:0;
+  margin:0;
+}
+
+.note-table td {
+  vertical-align: middle;
+  padding-top:0;
+  padding-bottom:0;
+}
+
+.note-submit {
+  height:2em;
+  font-size:10px;
+  vertical-align: middle;
+  padding-top:0;
+  padding-bottom:0;
+}
+
+
+/* Score Table */
+
+.score-table td {
+  vertical-align: middle;
+  padding-top:.75rem;
+  padding-bottom:.75rem;
+}
+
+.score-table p {
+  font-size: 11px;
+  vertical-align: middle;
+  text-align: center;
+  padding:0;
+  margin:0;
+}
+
+.hide-me {
+  display:none;
+}
+
+.border-bottom {
+  border-bottom: 1px solid black;
+}
+
+/* Reviews Table */
+
+.reviews-table td {
+  vertical-align : middle;
+}
+
+.reviews-table p {
+  font-size: 12px;
+  margin:0;
+}
+
+.empty-text {
+  text-align: center;
+}
+
+.text-input {
+  display:inline-block;
+  width: 90%;
+  height: 100%;
+  font-size: 12px;
+}
+
+/* Jumbotrons */
+
+.no-button-jumbotron {
+  padding-bottom: 5px;
+  margin-bottom: 0;
+}
+
+.button-jumbotron {
+  padding-bottom: 50px;
+  margin-bottom: 0;
+}
+
+img {
+  height:15px;
+  width:15px;
+}
+
+/* Review Table Filters */
+
+.table-filter-inputs-div {
+  width:100%;
+  display:table;
+}
+
+.table-filter-input-div {
+  display:table-cell;
+}
+
+.table-filter {
+  padding: 8px 20px 8px 20px;
+  width:100%;
+}
+
+.restaurant-dropdown {
+  padding: 11px 20px 11px 20px;
+  height:100%;
+  color: grey;
+}
+
+.filter-button {
+  padding: 20px 20px 20px 20px;
+}
+
+.filtered-column-header {
+  background-color: #b8daff;
+}
+
+/* Score Category Filters */
+
+.category-buttons-container {
+  width:100%;
+  display:table;
+}
+
+.category-button-container {
+  display:table-cell;
+}
+
+/* Filter Classes */
+
+.unselected-restaurant {
+  display:none;
+}
+
+.no-search-text {
+  display:none;
+}
+
+.row-has-filtered-empty-value {
+  display:none;
+}

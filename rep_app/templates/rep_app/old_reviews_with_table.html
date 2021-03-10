@@ -1,0 +1,268 @@
+{% extends "rep_app/base.html" %}
+{% block body_block %}
+
+<!-- Restaurant Stats & Comments Table -->
+{% if user.is_staff %}
+
+<div class="jumbotron no-button-jumbotron">
+  <div class="container">
+    <p class = "lead">Here's the review breakdown plus the notes that the other users see - type in the boxes & click Update to change them! </p>
+  </div>
+</div>
+
+<!-- Restaurant Stats & Notes Table -->
+
+<!-- Filters  -->
+<input id='breakdownFilter' type="text" style="width:100%;" placeholder="Filter by restaurant" class='table-filter' onkeyup='filterBreakdown()'>
+
+<!-- Table -->
+<table id = 'breakdownTable' class = 'breakdown-table note-table table table-hover' style="width:100%">
+  <colgroup>
+    <col span="1" style="width: 20%;">
+    <col span="1" style="width: 5%;">
+    <col span="1" style="width: 5%;">
+    <col span="1" style="width: 5%;">
+    <col span="1" style="width: 5%;">
+    <col span="1" style="width: 5%;">
+    <col span="1" style="width: 5%;">
+    <col span="1" style="width: 5%;">
+    <col span="1" style="width: 5%;">
+    <col span="1" style="width: 35%;">
+    <col span="1" style="width: 5%;">
+  </colgroup>
+  <thead class = "thead-dark">
+    <tr>
+      <th><p style = "text-align:left;">Restaurant</p></th>
+      <th><p>Score</p></th>
+      <th><p>Food</p></th>
+      <th><p>Service</p></th>
+      <th><p>Ambience</p></th>
+      <th><p>Value</p></th>
+      <th><p>Reviews</p></th>
+      <th><p><4</p></th>
+      <th><p>% <4</p></th>
+      <th><p>Notes</p></th>
+      <th><p></p></th>
+    </tr>
+  </thead>
+  {% for restaurant,value_dicts in restaurant_stats.items %}
+    {% if user.manager and user.manager.restaurant == restaurant or not user.manager %}
+      <tr>
+        <td><p style = "text-align:left;">{{restaurant}}</p></td>
+        <!-- Loop through categories -->
+        {% for category, values in value_dicts.scores.items %}
+          {% if values.average == 0 %}
+            {% if category == 'total' %}
+              <td><p title = 'No guests left a review'>-</p></td>
+            {% else %}
+              <td><p title = 'No guests left a {{category}} score'>-</p></td>
+            {% endif %}
+          {% else %}
+            {% if values.average > 4.5 %}
+              <td class = "table-success">
+            {% elif values.average > 4 %}
+              <td class = "table-warning">
+            {% elif values.average <= 4 %}
+              <td class = "table-danger">
+            {% endif %}
+            <p onclick = "filterStat('{{restaurant}}', '{{category}}')" title = 'This score is the average from {{values.total}} reviews'>{{values.average}}</p></td>
+          {% endif %}
+        {% endfor %}
+
+        <td><p>{{value_dicts.scores.total.total}}</p></td>
+        <td><p title = "{{value_dicts.below_4.reviews_below_4}} reviews had 3 ★s or less">{{value_dicts.below_4.reviews_below_4}}</p></td>
+        {% if value_dicts.below_4.reviews_below_4_p < 10 %}
+          <td class = "table-success">
+        {% else %}
+          <td class = "table-danger">
+        {% endif %}
+          <p title = "{{value_dicts.below_4.reviews_below_4_p}}% of reviews had 3 ★s or less">{{value_dicts.below_4.reviews_below_4_p}}%</p></td>
+
+        <!-- Notes Input -->
+        {% for note in notes %}
+          {% if note.restaurant == restaurant %}
+            <form action = "{% url 'rep_app:update_note' note.id %}" method="post">
+            {% csrf_token %}
+              {% if note.text %}
+                <td><input type='text' class='text-input' name="note" value = "{{note.text}}"></input></td>
+              {% else %}
+                <td><input type='text' class='text-input' name="note"></input></td>
+              {% endif %}
+            <td><button type="submit" class='btn btn-primary note-submit' name="Update" value="Update">Update</button></td>
+            </form>
+          {% endif %}
+        {% endfor %}
+      </tr>
+      {% endif %}
+    {% endfor %}
+  </table>
+<!-- End logic for showing notes table to staff -->
+{% endif %}
+
+<!-- Review List Jumbotron -->
+
+<div class="jumbotron no-button-jumbotron">
+  <div class="container">
+    <p class = "lead">
+      {% if user.manager %}
+        Here are all {{user.manager.restaurant}}'s reviews from last week
+      {% else %}
+        Here are all the reviews from last week
+      {% endif %}
+    </p>
+  </div>
+</div>
+
+
+<!-- List of Reviews -->
+
+<!-- Filters -->
+
+<div class="table-filter-inputs-div">
+  <div class="table-filter-input-div" style = "width:27%">
+    <select class = "form-select table-filter restaurant-dropdown" id="restaurantFilter" style = 'height:100%' name='restaurant' onchange='filterRestaurant(this.value)'>
+      <option value="All Restaurants">All Restaurants</option>
+      {% for restaurant in restaurant_list %}
+        <option value="{{restaurant}}">{{restaurant}}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="table-filter-input-div" style = "width:60%">
+    <input type="text" class="table-filter" id="reviewFilter" placeholder='Search reviews for keyword'>
+  </div>
+  <div class="table-filter-input-div" style = "height:100%">
+    <input type="submit" class = "table-filter" value = '🔍' onclick="filterReview()" title='Filter reviews by search term'></input>
+  </div>
+  <div class="table-filter-input-div">
+    <input type="submit" class = "table-filter" value = '✕' onclick="clearReviewFilter()" title='Clear search'></input>
+  </div>
+</div>
+
+<!-- Reviews Table -->
+
+<table id ='reviewsTable' class = 'reviews-table table table-hover' style="width: 100%">
+<colgroup>
+  <col span="1" style="width: 1%;">
+  <col span="1" style="width: 13%;">
+  <col span="1" style="width: 1%;">
+  <col span="1" style="width: 1%;">
+  <col span="1" style="width: 1%;">
+  <col span="1" style="width: 1%;">
+  <col span="1" style="width: 1%;">
+  <col span="1" style="width: 38%;">
+  <col span="1" style="width: 38%;">
+  <col span="1" style="width: 5%;">
+</colgroup>
+<thead class = 'thead-dark'>
+  <tr>
+    <th><p></p></th>
+    <th><p>Restaurant</p></th>
+    <th><p title='Overall Score'>★</p></th>
+    <th class='filter-column' onclick="clickFilterColumn(this,3,'number')"><p title='Click to only see reviews with a Food Score'>F</p></th>
+    <th class='filter-column' onclick="clickFilterColumn(this,4,'number')"><p title='Click to only see reviews with a Service Score'>S</p></th>
+    <th class='filter-column' onclick="clickFilterColumn(this,5,'number')"><p title='Click to only see reviews with an Ambience Score'>A</p></th>
+    <th class='filter-column' onclick="clickFilterColumn(this,6,'number')"><p title='Click to only see reviews with a Value Score'>V</p></th>
+    <th class='filter-column' onclick="clickFilterColumn(this,7,'text')"><p title='Click to only see reviews with a written review' style = "text-align:center;">Review</p></th>
+    <th><p style = "text-align:center;">Comment</p></th>
+    {% if not user.manager %}
+      <th><p>Submitted</p></th>
+    {% else %}
+      <th><p></p></th>
+    {% endif %}
+  </tr>
+</thead>
+{% for review in reviews %}
+    {% if review.score > 3 %}
+      <tr class = "table-success">
+    {% elif review.score == 3 %}
+      <tr class = "table-warning">
+    {% elif review.score < 3 %}
+      <tr class = "table-danger">
+    {% endif %}
+      <td>
+        {% if review.source == 'Google' %}
+          {% load static %}
+          <img src="{% static 'logos/google.png' %}" alt="Google Logo" title = 'This review was posted on Google'>
+        {% elif review.source == 'Tripadvisor' %}
+          {% load static %}
+          <img src="{% static 'logos/tripadvisor.png' %}" alt="Tripadvisor Logo" title = 'This review was posted on Tripadvisor'>
+        {% elif review.source == 'SevenRooms' %}
+          {% load static %}
+          <img src="{% static 'logos/sevenrooms.png' %}" alt="SevenRooms Logo" title = 'This review was posted on SevenRooms'>
+        {% elif review.source == 'Opentable' %}
+          {% load static %}
+          <img src="{% static 'logos/opentable.png' %}" alt="Opentable Logo" title = 'This review was posted on Opentable'>
+        {% else %}
+          <p title = 'This review was posted on {{review.source}}'>{{review.source}}</p>
+        {% endif %}
+      </td>
+      <td><p>{{review.restaurant}}</p></td>
+      {% if review.score > 0 %}
+        <td><p title='Overall Score'>{{review.score}}</p></td>
+      {% else %}
+        <td><p title='Overall Score'>-</p></td>
+      {% endif %}
+      {% if review.food > 0 %}
+        <td><p title='Food Score'>{{review.food}}</p></td>
+      {% else %}
+        <td class='empty'><p title="This review doesn't have a Food Score">-</p></td>
+      {% endif %}
+      {% if review.service > 0 %}
+        <td><p title='Service Score'>{{review.service}}</p></td>
+      {% else %}
+        <td class='empty'><p title="This review doesn't have a Service Score">-</p></td>
+      {% endif %}
+      {% if review.ambience > 0 %}
+        <td><p title='Ambience Score'>{{review.ambience}}</p></td>
+      {% else %}
+        <td class='empty'><p title="This review doesn't have an Ambience Score">-</p></td>
+      {% endif %}
+      {% if review.value > 0 %}
+        <td><p title='Value Score'>{{review.value}}</p></td>
+      {% else %}
+        <td class='empty'><p title="This review doesn't have a Value Score">-</p></td>
+      {% endif %}
+      {% if review.text == "nan" %}
+        <td class='empty'><p title="This customer didn't leave a written review" class = 'empty-text'><i>This customer didn't write a review</i></p></td>
+      {% else %}
+        <td><p title="This is the review that the customer wrote">{{review.text}}</p></td>
+      {% endif %}
+      <!-- Display submit form to managers -->
+      {% if user.manager %}
+        <form action = "{% url 'rep_app:submit_review' review.id %}" method="post">
+        {% csrf_token %}
+          {% if review.comment %}
+            <td><textarea class='text-input' name="comment" required>{{review.comment}}</textarea></td>
+          {% else %}
+            <td><textarea class='text-input' name="comment" required></textarea></td>
+          {% endif %}
+        <td><input type="submit" name="Submit" value="Submit"></td>
+        </form>
+      <!-- Display comment to staff/directors -->
+      {% else %}
+      <td>
+        {% if review.comment %}
+          <p title = 'This is the comment the manager has left'>{{review.comment}}</p>
+        {% else %}
+          <p title = "The manager hasn't left a comment yet" class = 'empty-text'>
+          {% if review.score > 3 %}
+            <i>Managers aren't required to leave comments on reviews with more than 3 ☆s</i>
+          {% else %}
+            <i>The manager hasn't left a comment yet</i>
+          {% endif %}
+          </p>
+        {% endif %}
+        </td>
+        <td>
+        {% if review.reviewed %}
+          <p title = 'The manager has submitted this review' style = "text-align:center">✓</p>
+        {% elif review.score < 4 %}
+          <p title = "The manager hasn't submitted this review yet" style = "text-align:center">✕</p>
+        {% endif %}
+        </td>
+      {% endif %}
+    </tr>
+  {% endfor %}
+</table>
+
+{% endblock %}

@@ -1,0 +1,188 @@
+{% extends "rep_app/base.html" %}
+{% block body_block %}
+
+
+<!-- Welcome Jumbotron -->
+
+<div class="jumbotron no-button-jumbotron">
+  <div class="container">
+  <h1 class = "display-4">Welcome {{user.first_name}}</h1>
+  <hr>
+  {% if user.manager %}
+    <p class = "lead">Here are the average scores of the reviews that {{user.manager.restaurant}} received last week. </p>
+  {% elif user.is_staff %}
+    <p class = "lead">Here are the average scores of last week's reviews, and how many the managers have submitted. </p>
+  {% else %}
+    <p class = "lead">Here are the average scores of last week's reviews, plus Annabel's notes. </p>
+  {% endif %}
+  </div>
+</div>
+
+<!-- Restaurant Stats Table -->
+
+<table class = 'breakdown-table table table-hover' style="width:100%">
+  <colgroup>
+    <col span="1" style="width: 20%;">
+    <col span="1" style="width: 5%;">
+    <col span="1" style="width: 5%;">
+    <col span="1" style="width: 5%;">
+    <col span="1" style="width: 5%;">
+    <col span="1" style="width: 5%;">
+    <col span="1" style="width: 5%;">
+    <col span="1" style="width: 5%;">
+    <col span="1" style="width: 5%;">
+    <col span="1" style="width: 40%;">
+  </colgroup>
+  <thead class='thead-dark'>
+  <tr>
+    <th><p style = "text-align:left;">Restaurant</p></th>
+    <th><p>Score</p></th>
+    <th><p>Food</p></th>
+    <th><p>Service</p></th>
+    <th><p>Ambience</p></th>
+    <th><p>Value</p></th>
+    <th><p>Reviews</p></th>
+    <th><p><4</p></th>
+    <th><p>% <4</p></th>
+    <th>
+    {% if user.is_staff %}
+      <p>% Submitted</p>
+    {% else %}
+      <p>Notes</p>
+    {% endif %}
+    </th>
+  </tr>
+  </thead>
+  {% for restaurant,value_dicts in restaurant_stats.items %}
+    {% if user.manager and user.manager.restaurant == restaurant or not user.manager %}
+      <tr>
+        <td><p style = "text-align:left;">{{restaurant}}</p></td>
+        <!-- Loop through categories -->
+        {% for category, values in value_dicts.scores.items %}
+          {% if values.average == 0 %}
+            {% if category == 'total' %}
+              <td><p title = 'No guests left a review'>-</p></td>
+            {% else %}
+              <td><p title = 'No guests left a {{category}} score'>-</p></td>
+            {% endif %}
+          {% else %}
+            {% if values.average > 4.5 %}
+              <td class = "table-success">
+            {% elif values.average > 4 %}
+              <td class = "table-warning">
+            {% elif values.average <= 4 %}
+              <td class = "table-danger">
+            {% endif %}
+            <p onclick = "filterStat('{{restaurant}}', '{{category}}')" title = 'This score is the average from {{values.total}} reviews'>{{values.average}}</p></td>
+          {% endif %}
+        {% endfor %}
+
+        <td><p>{{value_dicts.scores.total.total}}</p></td>
+        <td><p title = "{{value_dicts.below_4.reviews_below_4}} reviews had 3 ★s or less">{{value_dicts.below_4.reviews_below_4}}</p></td>
+        {% if value_dicts.below_4.reviews_below_4_p < 10 %}
+          <td class = "table-success">
+        {% else %}
+          <td class = "table-danger">
+        {% endif %}
+          <p title = "{{value_dicts.below_4.reviews_below_4_p}}% of reviews had 3 ★s or less">{{value_dicts.below_4.reviews_below_4_p}}%</p></td>
+
+        <!-- Show submission progress to staff -->
+        {% if user.is_staff %}
+          <td>
+            <div class="progress">
+              {% if value_dicts.below_4.reviews_below_4 == 0 %}
+                <div class="progress-bar" role="progressbar" aria-valuenow="1" aria-valuemin="0" aria-valuemax="100" style="width:100%">
+                None to Submit
+              {% elif value_dicts.submissions.submitted_p == 0 %}
+                <div class="progress-bar bg-light" role="progressbar" aria-valuenow="1" aria-valuemin="0" aria-valuemax="100" style="width:5%; color:red;">
+                0%
+              {% else %}
+                {% if value_dicts.submissions.submitted_p == 100 %}
+                  <div class="progress-bar bg-success progress-bar-striped" role="progressbar" aria-valuenow="{{values.submitted_p}}" aria-valuemin="0" aria-valuemax="100" style="width:{{values.submitted_p}}%">
+                {% elif value_dicts.submissions.submitted_p >= 75 %}
+                  <div class="progress-bar bg-info progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="{{values.submitted_p}}" aria-valuemin="0" aria-valuemax="100" style="width:{{values.submitted_p}}%">
+                {% elif value_dicts.submissions.submitted_p >= 50 %}
+                  <div class="progress-bar bg-warning progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="{{values.submitted_p}}" aria-valuemin="0" aria-valuemax="100" style="width:{{values.submitted_p}}%">
+                {% elif value_dicts.submissions.submitted_p > 0 %}
+                  <div class="progress-bar bg-danger progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="{{values.submitted_p}}" aria-valuemin="0" aria-valuemax="100" style="width:{{values.submitted_p}}%">
+                {% endif %}
+                {{value_dicts.submissions.submitted_p}}%
+              {% endif %}
+              </div>
+            </div>
+          </td>
+
+        <!-- Show staff notes to directors/managers -->
+        {% else %}
+          {% for note in notes %}
+            {% if note.restaurant == restaurant %}
+              {% if note.text %}
+                <td><p style = "text-align:left;">{{note.text}}</p></td>
+              {% else %}
+                <td></td>
+              {% endif %}
+            {% endif %}
+          {% endfor %}
+        {% endif %}
+
+      </tr>
+    {% endif %}
+  {% endfor %}
+</table>
+
+<!-- Review List Jumbotron -->
+
+{% if reviews.count > 0 %}
+  <div class="jumbotron no-button-jumbotron">
+    <div class="container">
+
+      {% if not user.is_staff and not user.manager %}
+        <a class="btn btn-danger btn-lg" href="{% url 'scores' %}" role="button">Scores</a>
+        <hr>
+      {% endif %}
+
+      <p class = "lead">
+        {% if user.manager %}
+          {% if reviews.count == 1 %}
+            Here's a review you still need to comment on - type a comment in the box & click Submit to clear it!
+          {% else %}
+            Here are the reviews you still need to comment on - type a comment in the boxes & click Submit to clear them!
+          {% endif %}
+        {% elif user.is_staff %}
+          Here are the reviews that managers still haven't submitted
+        {% else %}
+          Here are last week's reviews - click above to see the scores from the last few weeks and months
+        {% endif %}
+      </p>
+
+    </div>
+  </div>
+
+{% else %}
+  <div class="jumbotron button-jumbotron">
+    <div class="container">
+      <p class = "lead">
+        {% if user.is_staff %}
+          All reviews have been submitted! Click below to see all of the reviews from last week, or scores from the last few weeks and months
+        {% elif user.manager %}
+          Thanks for submitting your reviews! Click below to see all of {{user.manager.restaurant}}'s reviews from last week, or scores from the last few weeks and months
+        {% endif %}
+      </p>
+      <div style='display:table;'>
+        <div style="display:table-cell;">
+          <a class="btn btn-primary btn-lg" style="margin-right:10px;" href="{% url 'reviews' %}" role="button">Reviews</a>
+        </div>
+        <div style="display:table-cell;">
+          <a class="btn btn-danger btn-lg" href="{% url 'scores' %}" role="button">Scores</a>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endif %}
+
+
+{% if reviews.count > 0 %} <!-- Don't show reviews table if user is staff/manager and there aren't any unsubmitted reviews -->
+  {% include "rep_app/reviews_table.html" %}
+{% endif %} <!-- End conditional on review count -->
+
+{% endblock %}

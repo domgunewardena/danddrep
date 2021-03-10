@@ -1,0 +1,152 @@
+{% extends "rep_app/base.html" %}
+{% block body_block %}
+
+<div class="jumbotron no-button-jumbotron">
+
+  <div class="container">
+
+    <p class = "lead">
+      {% if user.manager %}
+        Here are {{user.manager.restaurant}}'s scores from the last few weeks and months
+      {% else %}
+        Here are the scores from the last few weeks and months
+      {% endif %}
+    </p>
+    <hr>
+
+    <!-- Category Filters -->
+    <!-- These change the rows that are displayed on the table, allowing users to see the scores for one category for all restaurants -->
+
+    {% if not user.manager %} <!-- Don't display category filters to managers, because they see all their category rows on page load -->
+
+      <div class="category-buttons-container">
+        <div class="category-button-container">
+          <p>Chose the category of the scores:</p>
+        </div>
+        {% for category in categories %} <!-- Loop through categories -->
+        <div class="category-button-container">
+          {% if category == 'Total'%} <!-- Mark Total button as selected, and category buttons as unselected -->
+            <button type="button" class = "btn btn-primary category-button" onclick = changeScoreCategory(this)>{{category}}</button>
+          {% else %}
+            <button type="button" class = "btn btn-light category-button" onclick = changeScoreCategory(this)>{{category}}</button>
+          {% endif %} <!-- End conditional on whether category is total -->
+        </div>
+        {% endfor %} <!-- End loop through categories -->
+      </div>
+
+    {% endif %} <!-- End conditional on whether user needs category filters -->
+
+  </div>
+</div>
+
+<table class = 'score-table table table-hover' style="width:100%">
+  <colgroup>
+    <col span="1" style="width: 10%;">
+    <col span="1" style="width: 5%;">
+    <col span="1" style="width: 5%;">
+    <col span="1" style="width: 5%;">
+    <col span="1" style="width: 5%;">
+    <col span="1" style="width: 5%;">
+    <col span="1" style="width: 5%;">
+    <col span="1" style="width: 5%;">
+    <col span="1" style="width: 5%;">
+  </colgroup>
+  <thead class = "thead-dark">
+    <tr>
+      <th><p style = "text-align:left;">Restaurant</p></th>
+      <th><p>Last Week</p></th>
+      <th><p>2 Wks Ago</p></th>
+      <th><p>3 Wks Ago</p></th>
+      <th><p>4 Wks Ago</p></th>
+      <th><p>Last Month</p></th>
+      <th><p>2 Mths Ago</p></th>
+      <th><p>3 Mths Ago</p></th>
+      <th><p>4 Mths Ago</p></th>
+    </tr>
+  </thead>
+
+    {% for restaurant,restaurant_dict in stats.items %} <!-- Loop through restaurants -->
+
+      {% if user.manager and user.manager.restaurant == restaurant or not user.manager %} <!-- Only create the rows for restaurants relevant to the user -->
+
+        <!-- Create the first set of rows i.e. the total plus category rows, which are either shown to managers or can be accessed by clicking total row for other users -->
+
+        {% for category, category_dict in restaurant_dict.items %} <!-- Loop through categories -->
+
+          <!-- Create the row -->
+
+          {% if user.manager %} <!-- If user is manager, show the category rows on page load -->
+
+            {% if category == 'Total' %}
+              <tr class = 'category-row category-Total'>
+            {% else %}
+              <tr>
+            {% endif %} <!-- End conditional on whether category is Total -->
+
+          {% else %} <!-- For other users, only show the total row on page load, and make the other category rows accessible by clicking on the total row -->
+
+            {% if category == 'Total' %}
+              <tr onclick = "showCategoryRows(this)" title="Click to show all score categories for this restaurant" class = 'category-row category-Total'>
+            {% else %}
+              <tr class = "hide-me">
+            {% endif %} <!-- End conditional on whether category is Total -->
+
+          {% endif %} <!-- End conditional on user type to determine whether to hide category rows -->
+
+          <!-- Create the first column -->
+
+          {% if category == 'Total' %} <!-- For total row, have restaurant name in first column, otherwise have the italicised category name in a blue table cell -->
+            <td><p style = "text-align:left;">{{restaurant}}</p></td>
+          {% else %}
+            <td class = 'table-primary' style = "text-align:right; font-size:11px;"<p><i>{{category}}</i></p></td>
+          {% endif %} <!-- End conditional on whether category is Total -->
+
+          <!-- Create the rest of the columns for each time period -->
+
+          {% for date, values in category_dict.items %} <!-- Loop through dates to populate each column -->
+            <td class = 'score-td'>
+              <p title = "This score is from {{values.reviews}} reviews">
+              {% if category == 'Total' %}
+                {{values.score}}
+              {% else %}
+                <i>{{values.score}}</i> <!-- Italicise category rows to distinguish them from total rows -->
+              {% endif %} <!-- End conditional on whether category is Total -->
+              </p>
+            </td>
+          {% endfor %} <!-- End loop through dates -->
+
+        </tr>
+        {% endfor %} <!-- End loop through categories for first set of rows -->
+
+        <!-- Create second set of rows i.e. the category rows that populate the table when the category filters are selected -->
+
+        {% if not user.manager %} <!-- Don't create these rows for managers, as they already see all category rows on page load -->
+
+          {% for category, category_dict in restaurant_dict.items %}   <!-- Loop through categories -->
+
+            {% if category != 'Total'%} <!-- Only create rows for categories -->
+
+              <tr onclick=" alert('To see all the score categories for this restaurant, change the category of the table to Total')"class = 'hide-me category-row category-{{category}}'>
+                <td><p style = 'text-align:left;'>{{restaurant}}</p></td>
+
+                {% for date, values in category_dict.items %} <!-- Loop through dates to populate each column -->
+                  <td class = 'score-td'>
+                    <p title = "This score is from {{values.reviews}} reviews">{{values.score}}</p>
+                  </td>
+                {% endfor %} <!-- End loop through dates -->
+
+              </tr>
+
+            {% endif %} <!-- End conditional on whether category is Total -->
+
+          {% endfor %} <!-- End loop through categories for second set of rows -->
+
+        {% endif %} <!-- End conditional on whether user is manager i.e. if their category rows are displayed on page load -->
+
+      {% endif %} <!-- End conditional for whether restaurant is relevant to user -->
+
+    {% endfor %} <!-- End loop through restaurants -->
+
+  </table>
+
+{% endblock %}

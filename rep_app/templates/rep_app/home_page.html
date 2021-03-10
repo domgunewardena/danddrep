@@ -6,8 +6,7 @@
 
 <div class="jumbotron no-button-jumbotron">
   <div class="container">
-  <h1 class = "display-4">Welcome User!</h1>
-  <!-- <h1 class = "display-4">Welcome {{user.first_name}}</h1> -->
+  <h1 class = "display-4">Welcome {{user.first_name}}</h1>
   <hr>
   {% if user.manager %}
     <p class = "lead">Here are the average scores of the reviews that {{user.manager.restaurant}} received last week. </p>

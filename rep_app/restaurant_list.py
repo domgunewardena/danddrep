@@ -121,8 +121,8 @@ restaurant_dict = {'100 Wardour Street': {'id': 1,
   'manager': {'email': 'seang@danddlondon.com', 'name': 'Sean Gavin'},
   'director': 'jb@danddlondon.com'},
  'Crafthouse': {'id': 14,
-  'manager': {'email': 'guillaumes@danddlondon.com',
-   'name': 'Guillaume Sanzey'},
+  'manager': {'email': 'crafthouse@danddlondon.com',
+   'name': 'Crafthouse Manager'},
   'director': 'jb@danddlondon.com'},
  'East 59th': {'id': 15,
   'manager': {'email': 'jonathanp@danddlondon.com', 'name': 'Jonathan Payan'},
@@ -189,15 +189,4 @@ restaurant_dict = {'100 Wardour Street': {'id': 1,
   'director': 'jb@danddlondon.com'},
  'The Modern Pantry': {'id': 35,
   'manager': {'email': 'annap@danddlondon.com', 'name': 'Anna Popiel'},
-  'director': 'sharonw@danddlondon.com'}}
-
-# for user_dict in users:
-#     user = User.objects.create_user(
-#         user_dict['email'],  
-#         user_dict['email'],  
-#         'restaurant123'  
-#     )  
-#     user.first_name = user_dict['first_name']  
-#     user.last_name = user_dict['last_name'] 
-#     user.save()
-    
+  'director': 'sharonw@danddlondon.com'}}    

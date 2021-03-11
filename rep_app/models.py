@@ -22,10 +22,10 @@ class Restaurant(models.Model):
 
     name = models.CharField(max_length=30)
     ops_director = models.ForeignKey(OpsDirector, on_delete=models.CASCADE)
-    manager = models.ManyToManyField(Manager, null=True)
+    manager = models.ForeignKey(Manager, on_delete=models.CASCADE, default=1)
 
     def __str__(self):
-        return self.name
+        return str(self.name)
 
 class Review(models.Model):
 
@@ -45,7 +45,7 @@ class Review(models.Model):
     reviewed = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.title
+        return str(self.title)
 
     def get_absolute_url(self):
         return reverse("rep_app:review_detail",kwargs={'pk':self.pk})
@@ -56,7 +56,7 @@ class Note(models.Model):
     text = models.TextField(max_length=1000, default='')
 
     def __str__(self):
-        return self.restaurant
+        return str(self.restaurant)
 
 
 

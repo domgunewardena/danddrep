@@ -9,7 +9,7 @@ class Manager(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     def __str__(self):
-        return  self.restaurant.name + ' - ' + self.user.first_name + ' ' + self.user.last_name
+        return  self.user.first_name + ' ' + self.user.last_name
 
 class OpsDirector(models.Model):
 
@@ -20,9 +20,9 @@ class OpsDirector(models.Model):
 
 class Restaurant(models.Model):
 
-    manager = models.OneToOneField(Manager, on_delete=models.CASCADE)
-    ops_director = models.OneToOneField(OpsDirector, on_delete=models.CASCADE)
     name = models.CharField(max_length=30)
+    ops_director = models.ForeignKey(OpsDirector, on_delete=models.CASCADE)
+    manager = models.ManyToManyField(Manager, null=True)
 
     def __str__(self):
         return self.name

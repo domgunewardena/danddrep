@@ -118,35 +118,27 @@ class IndexView(TemplateView):
 def home_view(request):
 
     restaurants = Restaurant.objects.all()
-
     all_reviews = Review.objects.filter(date__lt = monday_this, date__gte = monday_last).order_by('score', 'restaurant')
     unsubmitted_reviews = all_reviews.filter(reviewed = False, score__lt = 4)
 
     # If user is manager, filter unsubmitted reviews by restaurant
     try:
-        manager_restaurant = request.user.manager.restaurant
+        unsubmitted_reviews = unsubmitted_reviews.filter(restaurant = request.user.manager.restaurant)
     except ObjectDoesNotExist:
-        unsubmitted_reviews = unsubmitted_reviews
-    else:
-        unsubmitted_reviews = unsubmitted_reviews.filter(restaurant = manager_restaurant)
+        pass
 
     # If user is staff or manager, send unsubmitted reviews to template, otherwise send all reviews to template
-    try:
-        request.user.manager
-
-    except ObjectDoesNotExist:
-        if request.user.is_staff:
-            reviews = unsubmitted_reviews
-        else:
-            reviews = all_reviews
-
+    if request.user.is_staff:
+        reviews = unsubmitted_reviews # If user is staff
     else:
-        reviews = unsubmitted_reviews
+        try:
+            request.user.manager
+        except ObjectDoesNotExist:
+            reviews = all_reviews # If user isn't staff or manager
+        else:
+            reviews = unsubmitted_reviews # If user is manager
 
-    context = {
-        'restaurants':restaurants,
-        'reviews':reviews,
-    }
+    context = {'restaurants':restaurants,'reviews':reviews}
 
     return render(request, 'rep_app/home_page.html', context)
 
@@ -154,54 +146,22 @@ def home_view(request):
 def reviews_view(request):
 
     restaurants = Restaurant.objects.all()
-    all_reviews = Review.objects.filter(date__lt = monday_this, date__gte = monday_last).order_by('score', 'restaurant')
+    reviews = Review.objects.filter(date__lt = monday_this, date__gte = monday_last).order_by('score', 'restaurant')
 
     try:
-        reviews = all_reviews.filter(restaurant = request.user.manager.restaurant)
+        reviews = reviews.filter(restaurant = request.user.manager.restaurant)
     except:
-        reviews = all_reviews
+        pass
 
-    context = {
-        'reviews':reviews,
-        'restaurants':restaurants,
-        }
+    context = {'reviews':reviews,'restaurants':restaurants}
 
     return render(request, 'rep_app/reviews.html', context)
 
 @login_required
 def scores_view(request):
 
-    start = datetime.now()
-
-    monday_this = date.today() - timedelta(365)
-
-    weeks_scores = [get_restaurant_scores(Review.objects.filter(date__lt = monday_this, date__gte = (monday_this - timedelta(7) - timedelta(7)*i)).order_by('score', 'restaurant')) for i in range(4)]
-    months_scores = [get_restaurant_scores(Review.objects.filter(date__lt = monday_this, date__gte = (monday_this - timedelta(30) - timedelta(30)*i)).order_by('score', 'restaurant')) for i in range(4)]
-    all_scores = weeks_scores + months_scores
-
-    duration_strings = ['week', 'month']
-    period_strings = ['last','two','three','four']
-    date_strings = [period + '_' + duration + 's' if period != 'last' else period + '_' + duration for duration in duration_strings for period in period_strings]
-    categories = ['Total','Food','Service','Ambience','Value']
-
-    scores_dict = {date_strings[i]:all_scores[i] for i in range(8)}
-    stats = {
-        restaurant:{
-            category.capitalize():{
-                date_string:{
-                    'reviews':scores_dict[date_string][restaurant][category.lower()]['total'],
-                    'score':scores_dict[date_string][restaurant][category.lower()]['average']
-                } for date_string in date_strings
-            } for category in categories
-        } for restaurant in restaurant_list
-    }
-
-    context = {
-        'restaurant_list':restaurant_list,
-        'stats':stats,
-        'date_strings':date_strings,
-        'categories':categories,
-    }
+    restaurants = Restaurant.objects.all()
+    context = {'restaurants':restaurants}
 
     return render(request, 'rep_app/scores.html', context)
 

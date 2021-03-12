@@ -10,7 +10,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import send_mail
 
 from rep_app import models
-from rep_app.models import Manager, Review, Note
+from rep_app.models import Manager, OpsDirector, Restaurant, Review, Note
 
 from datetime import date, time, datetime, timedelta
 from statistics import mean
@@ -100,12 +100,12 @@ def get_restaurant_scores(reviews):
 
 def test_view(request):
 
-    all_reviews = Review.objects.order_by('score', 'restaurant')
+    restaurants = Restaurant.objects.all()[0]
     # restaurant_stats = get_restaurant_stats(all_reviews)
 
     context = {
         # 'stats':restaurant_stats,
-        'reviews':all_reviews
+        'restaurants':restaurants
     }
 
     return render(request, 'rep_app/test.html', context)

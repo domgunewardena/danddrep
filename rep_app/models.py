@@ -45,13 +45,13 @@ class Restaurant(models.Model):
         return x/y if y != 0 else 0
 
     def get_last_week_reviews(self):
-        return Review.objects.filter(restaurant=self.id, date__lt = monday_this, date__gte = monday_last).order_by('score', 'date')
+        return Review.objects.filter(restaurant=self.id, date__gte = monday_last, date__lt = monday_this).order_by('score')
 
     def get_last_week_unsubmitted_reviews(self):
-        return Review.objects.filter(restaurant=self.id, date__lt = monday_this, date__gte = monday_last, reviewed=False, score__lt = 4).order_by('score', 'date')
+        return Review.objects.filter(restaurant=self.id, date__gte = monday_last,date__lt = monday_this, reviewed = False, score__lt = 4).order_by('score')
 
     def get_reviews_by_date(self, greater_than_equal_date,less_than_date):
-        return Review.objects.filter(date__gte = greater_than_equal_date, date__lt = less_than_date)
+        return Review.objects.filter(restaurant=self.id, date__gte = greater_than_equal_date, date__lt = less_than_date)
 
     def get_reviews_dict(self, reviews):
 
@@ -124,6 +124,7 @@ class Review(models.Model):
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
     title = models.CharField(max_length=50, default='')
     date = models.DateField()
+    visit_date = models.CharField(max_length=20, null=True)
     score = models.IntegerField()
     food = models.IntegerField(null=True)
     service = models.IntegerField(null=True)

@@ -2,7 +2,13 @@
 {% block body_block %}
 
 <h1>Test</h1>
-<h2>{{restaurants.get_stats}}</h2>
+{% for restaurant in restaurants %}
+
+  <h2>{{restaurant.name}}</h2>
+  <h2>{{restaurant.get_stats}}</h2>
+  <h2>{{restaurant.get_scores}}</h2>
+
+{% endfor %}
 <!-- {% for restaurant, value_dicts in stats.items %}
   <h1>{{restaurant}}</h1>
   {% for category, category_dict in value_dicts.scores.items %}

@@ -100,7 +100,7 @@ def get_restaurant_scores(reviews):
 
 def test_view(request):
 
-    restaurants = Restaurant.objects.all()[0]
+    restaurants = Restaurant.objects.all()
     # restaurant_stats = get_restaurant_stats(all_reviews)
 
     context = {

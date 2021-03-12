@@ -5,7 +5,7 @@ from django.urls import reverse
 from statistics import mean
 from datetime import date, time, datetime, timedelta
 
-today = date.today()
+today = date.today() - timedelta(365)
 monday_this = today - timedelta(today.weekday())
 monday_last = monday_this - timedelta(7)
 
@@ -73,7 +73,7 @@ class Restaurant(models.Model):
         return {
             category: {
                 'total': len([review[category] for review in reviews_dict if review[category] > 0]),
-                'average': my_mean([review[category] for review in reviews_dict if review[category] > 0])
+                'average': self.my_mean([review[category] for review in reviews_dict if review[category] > 0])
             } for category in self.score_categories
         }
 
@@ -111,8 +111,8 @@ class Restaurant(models.Model):
         return {
             category.capitalize():{
                 date_string:{
-                    'reviews':scores_dict[date_string][restaurant][category.lower()]['total'],
-                    'score':scores_dict[date_string][restaurant][category.lower()]['average']
+                    'reviews':scores_dict[date_string][category.lower()]['total'],
+                    'score':scores_dict[date_string][category.lower()]['average']
                 } for date_string in self.date_strings
             } for category in self.score_categories
         }

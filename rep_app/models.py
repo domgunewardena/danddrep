@@ -5,9 +5,22 @@ from django.urls import reverse
 from statistics import mean
 from datetime import date, time, datetime, timedelta
 
-today = date.today() - timedelta(365)
-monday_this = today - timedelta(today.weekday())
-monday_last = monday_this - timedelta(7)
+def monday(date):
+    return date - timedelta(date.weekday())
+
+def weeks_ago(date, n):
+    return date - timedelta(7*n)
+
+def months_ago(date, n):
+    return date - timedelta(28*n)
+
+def one_year_ago(date):
+    return date - timedelta(364)
+
+today = one_year_ago(date.today())
+monday_this = monday(today)
+monday_last = weeks_ago(monday_this, 1)
+monday_last_month = months_ago(monday_this, 1)
 
 # Create your models here.
 
@@ -102,8 +115,8 @@ class Restaurant(models.Model):
 
     def get_scores(self):
 
-        weeks_scores = [self.get_scores_dict(self.get_reviews_by_date(monday_this - timedelta(7) - timedelta(7)*i, monday_this)) for i in range(4)]
-        months_scores = [self.get_scores_dict(self.get_reviews_by_date(monday_this - timedelta(28) - timedelta(28)*i, monday_this)) for i in range(4)]
+        weeks_scores = [self.get_scores_dict(self.get_reviews_by_date(weeks_ago(monday_last,i), weeks_ago(monday_this,i))) for i in range(4)]
+        months_scores = [self.get_scores_dict(self.get_reviews_by_date(months_ago(monday_last_month, i),months_ago(monday_this,i))) for i in range(4)]
         all_scores = weeks_scores + months_scores
 
         scores_dict = {self.date_strings[i]:all_scores[i] for i in range(8)}

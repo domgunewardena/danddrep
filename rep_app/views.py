@@ -101,7 +101,8 @@ def get_restaurant_scores(reviews):
 def test_view(request):
 
     restaurants = Restaurant.objects.all()
-    context = {'restaurants':restaurants}
+    notes = Note.objects.all()
+    context = {'restaurants':restaurants, 'notes':notes}
 
     return render(request, 'rep_app/test.html', context)
 
@@ -115,7 +116,7 @@ def home_view(request):
     # If user is manager, also filter reviews by restaurant
 
     try:
-        reviews = reviews.filter(reviewed = False, score__lt = 4, restaurant = request.user.manager.restaurant) # If user is manager
+        reviews = reviews.filter(reviewed = False, score__lt = 4, restaurant = request.user.manager.restaurant_set.first()) # If user is manager
     except ObjectDoesNotExist:
         if request.user.is_staff:
             reviews = reviews.filter(reviewed = False, score__lt = 4) # If user is staff
@@ -134,8 +135,8 @@ def reviews_view(request):
 
     # If user is manager, filter reviews by restaurant
     try:
-        reviews = reviews.filter(restaurant = request.user.manager.restaurant)
-    except:
+        reviews = reviews.filter(restaurant = request.user.manager.restaurant_set.first())
+    except ObjectDoesNotExist:
         pass
 
     context = {'reviews':reviews,'restaurants':restaurants}
@@ -207,12 +208,8 @@ def update_note(request, note_id):
         note.text = request.POST['note']
         note.save()
 
-        gms = Manager.objects.all()
-        for gm in gms:
-            if gm.restaurant == note.restaurant:
-                manager = gm.user.first_name
-
-        restaurant = note.restaurant
+        manager = note.restaurant.manager.user.first_name
+        restaurant = note.restaurant.name
         app_url = 'http://127.0.0.1:8000/'
         email_note = NoteNotification(restaurant, manager, note.text, app_url)
 

@@ -153,6 +153,7 @@ def home_view(request):
 @login_required
 def reviews_view(request):
 
+    restaurants = Restaurant.objects.all()
     all_reviews = Review.objects.filter(date__lt = monday_this, date__gte = monday_last).order_by('score', 'restaurant')
 
     try:
@@ -160,15 +161,9 @@ def reviews_view(request):
     except:
         reviews = all_reviews
 
-    restaurant_stats = get_restaurant_stats(all_reviews)
-
-    notes = Note.objects.all()
-
     context = {
         'reviews':reviews,
-        'restaurant_stats':restaurant_stats,
-        'notes':notes,
-        'restaurant_list':restaurant_list,
+        'restaurants':restaurants,
         }
 
     return render(request, 'rep_app/reviews.html', context)

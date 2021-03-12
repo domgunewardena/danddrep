@@ -41,7 +41,7 @@ class OpsDirector(models.Model):
 class Restaurant(models.Model):
 
     name = models.CharField(max_length=30)
-    ops_director = models.ForeignKey(OpsDirector, on_delete=models.CASCADE)
+    opsdirector = models.ForeignKey(OpsDirector, on_delete=models.CASCADE)
     manager = models.ForeignKey(Manager, on_delete=models.CASCADE, default=1)
 
     score_categories = ['total','food','service','ambience','value']

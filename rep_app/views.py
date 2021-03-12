@@ -101,12 +101,7 @@ def get_restaurant_scores(reviews):
 def test_view(request):
 
     restaurants = Restaurant.objects.all()
-    # restaurant_stats = get_restaurant_stats(all_reviews)
-
-    context = {
-        # 'stats':restaurant_stats,
-        'restaurants':restaurants
-    }
+    context = {'restaurants':restaurants}
 
     return render(request, 'rep_app/test.html', context)
 
@@ -122,10 +117,10 @@ class IndexView(TemplateView):
 @login_required
 def home_view(request):
 
-    all_reviews = Review.objects.filter(date__lt = monday_this, date__gte = monday_last).order_by('score', 'restaurant')
-    unsubmitted_reviews = Review.objects.filter(date__lt = monday_this, date__gte = monday_last, reviewed=False, score__lt = 4).order_by('score', 'restaurant', 'date')
+    restaurants = Restaurant.objects.all()
 
-    restaurant_stats = get_restaurant_stats(all_reviews)
+    all_reviews = Review.objects.filter(date__lt = monday_this, date__gte = monday_last).order_by('score', 'restaurant')
+    unsubmitted_reviews = all_reviews.filter(reviewed = False, score__lt = 4)
 
     # If user is manager, filter unsubmitted reviews by restaurant
     try:
@@ -138,21 +133,19 @@ def home_view(request):
     # If user is staff or manager, send unsubmitted reviews to template, otherwise send all reviews to template
     try:
         request.user.manager
+
     except ObjectDoesNotExist:
         if request.user.is_staff:
             reviews = unsubmitted_reviews
         else:
             reviews = all_reviews
+
     else:
         reviews = unsubmitted_reviews
 
-    notes = Note.objects.all()
-
     context = {
-        'restaurant_stats':restaurant_stats,
-        'notes':notes,
+        'restaurants':restaurants,
         'reviews':reviews,
-        'restaurant_list':restaurant_list,
     }
 
     return render(request, 'rep_app/home_page.html', context)

@@ -105,38 +105,22 @@ def test_view(request):
 
     return render(request, 'rep_app/test.html', context)
 
-class IndexView(TemplateView):
-
-    template_name = 'index.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['insert_content'] = 'BASIC INJECTION!'
-        return context
-
 @login_required
 def home_view(request):
 
     restaurants = Restaurant.objects.all()
-    all_reviews = Review.objects.filter(date__lt = monday_this, date__gte = monday_last).order_by('score', 'restaurant')
-    unsubmitted_reviews = all_reviews.filter(reviewed = False, score__lt = 4)
+    reviews = Review.objects.filter(date__lt = monday_this, date__gte = monday_last).order_by('score', 'restaurant')
 
-    # If user is manager, filter unsubmitted reviews by restaurant
+    # If user is manager or staff, filter reviews by unsubmitted and below 4
+    # If user is manager, also filter reviews by restaurant
+
     try:
-        unsubmitted_reviews = unsubmitted_reviews.filter(restaurant = request.user.manager.restaurant)
+        reviews = reviews.filter(reviewed = False, score__lt = 4, restaurant = request.user.manager.restaurant) # If user is manager
     except ObjectDoesNotExist:
-        pass
-
-    # If user is staff or manager, send unsubmitted reviews to template, otherwise send all reviews to template
-    if request.user.is_staff:
-        reviews = unsubmitted_reviews # If user is staff
-    else:
-        try:
-            request.user.manager
-        except ObjectDoesNotExist:
-            reviews = all_reviews # If user isn't staff or manager
+        if request.user.is_staff:
+            reviews = reviews.filter(reviewed = False, score__lt = 4) # If user is staff
         else:
-            reviews = unsubmitted_reviews # If user is manager
+            pass # If user isn't manager or staff
 
     context = {'restaurants':restaurants,'reviews':reviews}
 
@@ -148,6 +132,7 @@ def reviews_view(request):
     restaurants = Restaurant.objects.all()
     reviews = Review.objects.filter(date__lt = monday_this, date__gte = monday_last).order_by('score', 'restaurant')
 
+    # If user is manager, filter reviews by restaurant
     try:
         reviews = reviews.filter(restaurant = request.user.manager.restaurant)
     except:

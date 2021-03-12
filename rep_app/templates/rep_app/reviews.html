@@ -45,10 +45,11 @@
         <th><p></p></th>
       </tr>
     </thead>
-    {% for restaurant in restaurants %}
+    {% for restaurant in restaurants %} <!-- Loop through categories -->
+      {% with stats=restaurant.get_stats %} <!-- Cache stats -->
         <tr>
           <td><p style = "text-align:left;">{{restaurant}}</p></td>
-          {% for category, values in restaurant.get_stats.scores.items %} <!-- Loop through categories -->
+          {% for category, values in stats.scores.items %} <!-- Loop through categories -->
             {% if values.average == 0 %} <!-- Conditional on whether any reviews were left for this category -->
               {% if category == 'total' %} <!-- Conditional on whether category is total & so whether empty title should include category or not -->
                 <td><p title = 'No guests left a review'>-</p></td>
@@ -67,17 +68,17 @@
             {% endif %} <!-- End conditional on whether any reviews were left for this category -->
           {% endfor %} <!-- End loop through categories -->
 
-          <td><p>{{restaurant.get_stats.scores.total.total}}</p></td>
-          <td><p title = "{{restaurant.get_stats.below_4.reviews_below_4}} reviews had 3 ★s or less">
-            {{restaurant.get_stats.below_4.reviews_below_4}}
+          <td><p>{{stats.scores.total.total}}</p></td>
+          <td><p title = "{{stats.below_4.reviews_below_4}} reviews had 3 ★s or less">
+            {{stats.below_4.reviews_below_4}}
           </p></td>
-          {% if restaurant.get_stats.below_4.reviews_below_4_p < 10 %} <!-- Conditional on % of below 4 reviews to determine cell colour -->
+          {% if stats.below_4.reviews_below_4_p < 10 %} <!-- Conditional on % of below 4 reviews to determine cell colour -->
             <td class = "table-success">
           {% else %}
             <td class = "table-danger">
           {% endif %} <!-- End conditional on % of below 4 reviews to determine cell colour -->
-            <p title = "{{restaurant.get_stats.below_4.reviews_below_4_p}}% of reviews had 3 ★s or less">
-              {{restaurant.get_stats.below_4.reviews_below_4_p}}%
+            <p title = "{{stats.below_4.reviews_below_4_p}}% of reviews had 3 ★s or less">
+              {{stats.below_4.reviews_below_4_p}}%
             </p></td>
 
           <!-- Notes Input -->
@@ -91,6 +92,7 @@
             <td><button type="submit" class='btn btn-primary note-submit' name="Update" value="Update">Update</button></td>
           </form>
         </tr>
+        {% endwith %} <!-- End stats variable cache -->
       {% endfor %} <!-- End loop through restaurants -->
     </table>
 {% endif %} <!-- End logic for showing notes table to staff -->

@@ -67,18 +67,20 @@
     {% endif %}
       <!-- Display the company logo of the source website of the review -->
       <td>
+        <a href="{{review.link}}" target="_blank" title='Click to open the original review'>
         {% load static %}
-        {% if review.source == 'Google' %}
-          <img src="{% static 'logos/google.png' %}" alt="Google Logo" title = 'This review was posted on Google'>
-        {% elif review.source == 'Tripadvisor' %}
-          <img src="{% static 'logos/tripadvisor.png' %}" alt="Tripadvisor Logo" title = 'This review was posted on Tripadvisor'>
-        {% elif review.source == 'SevenRooms' %}
-          <img src="{% static 'logos/sevenrooms.png' %}" alt="SevenRooms Logo" title = 'This review was posted on SevenRooms'>
-        {% elif review.source == 'Opentable' %}
-          <img src="{% static 'logos/opentable.png' %}" alt="Opentable Logo" title = 'This review was posted on Opentable'>
-        {% else %}
-          <p title = 'This review was posted on {{review.source}}'>{{review.source}}</p>
-        {% endif %}
+          {% if review.source == 'Google' %}
+            <img src="{% static 'logos/google.png' %}" alt="Google Logo">
+          {% elif review.source == 'Tripadvisor' %}
+            <img src="{% static 'logos/tripadvisor.png' %}" alt="Tripadvisor Logo">
+          {% elif review.source == 'SevenRooms' %}
+            <img src="{% static 'logos/sevenrooms.png' %}" alt="SevenRooms Logo">
+          {% elif review.source == 'Opentable' %}
+            <img src="{% static 'logos/opentable.png' %}" alt="Opentable Logo">
+          {% else %}
+            <p>{{review.source}}</p>
+          {% endif %}
+        </a>
       </td>
       <td><p>{{review.restaurant}}</p></td>
       {% if review.score > 0 %}
@@ -106,10 +108,10 @@
       {% else %}
         <td class='empty'><p title="This review doesn't have a Value Score">-</p></td>
       {% endif %}
-      {% if review.text == "nan" %}
-        <td class='empty'><p title="This customer didn't leave a written review" class = 'empty-text'><i>This customer didn't write a review</i></p></td>
-      {% else %}
+      {% if review.text %}
         <td><p title="This is the review that the customer wrote">{{review.text}}</p></td>
+      {% else %}
+        <td class='empty'><p title="This customer didn't leave a written review" class = 'empty-text'><i>This customer didn't write a review</i></p></td>
       {% endif %}
 
       <!-- Display comment form to managers -->

@@ -64,7 +64,7 @@
   vertical-align : middle;
 }
 
-.reviews-table p {
+.reviews-table p, a {
   font-size: 12px;
   margin:0;
 }
@@ -78,6 +78,22 @@
   width: 90%;
   height: 100%;
   font-size: 12px;
+}
+
+.hideContent {
+    overflow: hidden;
+    line-height: 1em;
+    height: 2em;
+}
+
+.showContent {
+    line-height: 1em;
+    height: auto;
+}
+
+.show-more {
+    padding: 1px 0;
+    text-align: center;
 }
 
 /* Jumbotrons */

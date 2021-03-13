@@ -39,7 +39,6 @@ def home_view(request):
 
     # If user is manager or staff, filter reviews by unsubmitted and below 4
     # If user is manager, also filter reviews by restaurant
-
     try:
         reviews = reviews.filter(reviewed = False, score__lt = 4, restaurant = request.user.manager.restaurant_set.first()) # If user is manager
     except ObjectDoesNotExist:

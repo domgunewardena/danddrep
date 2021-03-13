@@ -109,7 +109,14 @@
         <td class='empty'><p title="This review doesn't have a Value Score">-</p></td>
       {% endif %}
       {% if review.text %}
-        <td><p title="This is the review that the customer wrote">{{review.text}}</p></td>
+        <td title="This is the review that the customer wrote">
+          {% if review.text|length > 100 %}
+            <div class="content hideContent"><p>{{review.text}}</p></div>
+            <div class="show-more"><a href="#" onClick="return false;">Show more</a></div>
+          {% else %}
+            <p>{{review.text}}</p>
+          {% endif %}
+        </td>
       {% else %}
         <td class='empty'><p title="This customer didn't leave a written review" class = 'empty-text'><i>This customer didn't write a review</i></p></td>
       {% endif %}

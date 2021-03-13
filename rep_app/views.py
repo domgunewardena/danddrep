@@ -9,92 +9,17 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import send_mail
 
-from rep_app import models
 from rep_app.models import Manager, OpsDirector, Restaurant, Review, Note
-
-from datetime import date, time, datetime, timedelta
-from statistics import mean
-
-from rep_app.restaurant_list import restaurant_list
-restaurant_list = list(restaurant_list.keys())
-
 from rep_app.emails import AppEmail, NoteNotification
 
+from datetime import date, time, datetime, timedelta
+
 # Date Variables
-# today = date.today()
+
+today = date.today()
 today = date.today()-timedelta(365)
 monday_this = today - timedelta(today.weekday())
 monday_last = monday_this - timedelta(7)
-
-def my_mean(values):
-    return round(mean(values),1) if values else 0
-
-def my_divide(x,y):
-    return x/y if y != 0 else 0
-
-def get_restaurant_stats(reviews):
-
-    review_scores = [
-        {
-            'restaurant':getattr(review,'restaurant'),
-            'total':getattr(review,'score'),
-            'food':getattr(review,'food'),
-            'service':getattr(review,'service'),
-            'value':getattr(review,'value'),
-            'ambience':getattr(review,'ambience'),
-            'submitted':getattr(review, 'reviewed')
-        } for review in reviews
-    ]
-
-    categories = ['total','food','service','ambience','value']
-
-    restaurant_stats = {
-        restaurant: {
-            'scores': {
-                category:{
-                    'total': len([review[category] for review in review_scores if review['restaurant'] == restaurant and review[category] > 0]),
-                    'average': my_mean([review[category] for review in review_scores if review['restaurant'] == restaurant and review[category] > 0])
-                } for category in categories
-            },
-            'submissions': {
-                'submitted_reviews': len([review['total'] for review in review_scores if review['restaurant'] == restaurant and review['submitted'] and review['total'] < 4]),
-                'unsubmitted_reviews': len([review['total'] for review in review_scores if review['restaurant'] == restaurant and not review['submitted'] and review['total'] < 4]),
-                'submitted_p': round(my_divide(len([review['total'] for review in review_scores if review['restaurant'] == restaurant and review['submitted'] and review['total'] < 4]), len([review['total'] for review in review_scores if review['restaurant'] == restaurant and review['total'] < 4]))*100),
-            },
-            'below_4': {
-                'reviews_below_4': len([review['total'] for review in review_scores if review['restaurant'] == restaurant and review['total'] < 4]),
-                'reviews_below_4_p': round(my_divide(len([review['total'] for review in review_scores if review['restaurant'] == restaurant and review['total'] < 4]), len([review['total'] for review in review_scores if review['restaurant'] == restaurant]))*100),
-            }
-        } for restaurant in restaurant_list
-    }
-
-    return restaurant_stats
-
-def get_restaurant_scores(reviews):
-
-    review_scores = [
-        {
-            'restaurant':getattr(review,'restaurant'),
-            'total':getattr(review,'score'),
-            'food':getattr(review,'food'),
-            'service':getattr(review,'service'),
-            'value':getattr(review,'value'),
-            'ambience':getattr(review,'ambience'),
-        } for review in reviews
-    ]
-
-    categories = ['total','food','service','value','ambience']
-
-    restaurant_scores = {
-        restaurant:{
-            category: {
-                'total': len([review[category] for review in review_scores if review['restaurant'] == restaurant and review[category] > 0]),
-                'average': my_mean([review[category] for review in review_scores if review['restaurant'] == restaurant and review[category] > 0])
-            } for category in categories
-        } for restaurant in restaurant_list
-    }
-
-    return restaurant_scores
 
 # Create your views here.
 
@@ -150,43 +75,6 @@ def scores_view(request):
     context = {'restaurants':restaurants}
 
     return render(request, 'rep_app/scores.html', context)
-
-# @login_required
-# def scores_view_old(request):
-#
-#     start = datetime.now()
-#
-#     monday_this = date.today() - timedelta(365)
-#
-#     weeks_scores = [get_restaurant_scores(Review.objects.filter(date__lt = monday_this, date__gte = (monday_this - timedelta(7) - timedelta(7)*i)).order_by('score', 'restaurant')) for i in range(4)]
-#     months_scores = [get_restaurant_scores(Review.objects.filter(date__lt = monday_this, date__gte = (monday_this - timedelta(30) - timedelta(30)*i)).order_by('score', 'restaurant')) for i in range(4)]
-#     all_scores = weeks_scores + months_scores
-#
-#     duration_strings = ['week', 'month']
-#     period_strings = ['last','two','three','four']
-#     date_strings = [period + '_' + duration + 's' if period != 'last' else period + '_' + duration for duration in duration_strings for period in period_strings]
-#     categories = ['Total','Food','Service','Value','Ambience']
-#
-#     scores_dict = {date_strings[i]:all_scores[i] for i in range(8)}
-#     stats = {
-#         restaurant:{
-#             category.capitalize():{
-#                 date_string:{
-#                     'reviews':scores_dict[date_string][restaurant]['total_' + category.lower()],
-#                     'score':scores_dict[date_string][restaurant]['average_' + category.lower()]
-#                 } for date_string in date_strings
-#             } for category in categories
-#         } for restaurant in restaurant_list
-#     }
-#
-#     context = {
-#         'restaurant_list':restaurant_list,
-#         'stats':stats,
-#         'date_strings':date_strings,
-#         'categories':categories,
-#     }
-#
-#     return render(request, 'rep_app/scores.html', context)
 
 @login_required
 def submit_review(request, review_id):

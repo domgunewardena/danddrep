@@ -26,7 +26,7 @@ class Command(BaseCommand):
                 Review(
                     source = reviews_database.iloc[row]['source'],
                     restaurant = Restaurant.objects.filter(id=reviews_database.iloc[row]['restaurant_id'])[0],
-                    title = reviews_database.iloc[row]['title'],
+                    title = reviews_database.iloc[row]['title'][:50],
                     date = reviews_database.iloc[row]['date'],
                     visit_date = reviews_database.iloc[row]['visit_date'],
                     score = reviews_database.iloc[row]['score'],
@@ -34,7 +34,7 @@ class Command(BaseCommand):
                     service = reviews_database.iloc[row]['service'],
                     value = reviews_database.iloc[row]['value'],
                     ambience = reviews_database.iloc[row]['ambience'],
-                    text = reviews_database.iloc[row]['review'],
+                    text = reviews_database.iloc[row]['review'][:10000],
                     link = reviews_database.iloc[row]['link']
                 )
                 for row in range(len(reviews_database)) 

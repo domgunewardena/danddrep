@@ -52,7 +52,7 @@ class Command(BaseCommand):
 
                 self.stdout.write(self.style.SUCCESS('Manager successfully created: ' + value['manager']['name']))
 
-                restaurant = Restaurant.objects.create(name=key,ops_director=director,manager=manager)
+                restaurant = Restaurant.objects.create(name=key,opsdirector=director,manager=manager)
                 restaurant.save()
 
                 self.stdout.write(self.style.SUCCESS('Restaurant successfully created: ' + key))

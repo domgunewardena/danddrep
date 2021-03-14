@@ -25,12 +25,12 @@ class Command(BaseCommand):
                 director_user.last_name = name.split(' ')[1]
                 director_user.save()
 
-                self.stdout.write(self.style.SUCCESS('User created: ' + name))
+                self.stdout.write(self.style.SUCCESS('User successfully created: ' + name))
 
                 director = OpsDirector.objects.create(user=director_user)
                 director.save()
 
-                self.stdout.write(self.style.SUCCESS('Director created: ' + name))
+                self.stdout.write(self.style.SUCCESS('Director successfully created: ' + name))
 
             for key, value in restaurant_dict.items():
 
@@ -45,22 +45,22 @@ class Command(BaseCommand):
                 manager_user.last_name = manager_lname
                 manager_user.save()
 
-                self.stdout.write(self.style.SUCCESS('User created: ' + value['manager']['name']))
+                self.stdout.write(self.style.SUCCESS('User successfully created: ' + value['manager']['name']))
 
                 manager = Manager.objects.create(user=manager_user)
                 manager.save()
 
-                self.stdout.write(self.style.SUCCESS('Manager created: ' + value['manager']['name']))
+                self.stdout.write(self.style.SUCCESS('Manager successfully created: ' + value['manager']['name']))
 
                 restaurant = Restaurant.objects.create(name=key,ops_director=director,manager=manager)
                 restaurant.save()
 
-                self.stdout.write(self.style.SUCCESS('Restaurant created: ' + key))
+                self.stdout.write(self.style.SUCCESS('Restaurant successfully created: ' + key))
                 
                 note = Note.objects.create(restaurant=restaurant,text='')
                 note.save()
                 
-                self.stdout.write(self.style.SUCCESS('Note created: ' + key))
+                self.stdout.write(self.style.SUCCESS('Note successfully created: ' + key))
                 
         except Exception as err:
             
@@ -68,6 +68,6 @@ class Command(BaseCommand):
             
             return
             
-        self.stdout.write(self.style.SUCCESS('All core objects created'))
+        self.stdout.write(self.style.SUCCESS('All core objects successfully created'))
         
         return

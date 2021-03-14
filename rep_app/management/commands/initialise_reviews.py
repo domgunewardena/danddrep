@@ -13,7 +13,7 @@ class Command(BaseCommand):
         except:
             return None
     
-    def handle(self):
+    def handle(self, *args, **options):
         
         try:
             reviews = Reviews()

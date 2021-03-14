@@ -7,19 +7,19 @@ class Command(BaseCommand):
     
     help = 'Create review objects from all reviews in database'
     
-    def get_restaurant_id(restaurant_string):
-        try:
-            return int(restaurant_dict[restaurant_string]['id'])
-        except:
-            return None
-    
     def handle(self, *args, **options):
+        
+        def get_restaurant_id(restaurant_string):
+            try:
+                return int(restaurant_dict[restaurant_string]['id'])
+            except:
+                return None
         
         try:
             reviews = Reviews()
             reviews_database = reviews.database.copy()
 
-            reviews_database['restaurant_id'] = reviews_database['restaurant'].apply(self.get_restaurant_id)
+            reviews_database['restaurant_id'] = reviews_database['restaurant'].apply(get_restaurant_id)
             reviews_database = reviews_database[reviews_database['restaurant_id'].notnull()]
 
             all_reviews = [

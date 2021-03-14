@@ -7,7 +7,7 @@ class Command(BaseCommand):
     
     help = 'Create all restaurant, manager and ops director objects'
     
-    def handle(self):
+    def handle(self, *args, **options):
 
         ops_directors = {
             'michaelf@danddlondon.com':'Michael Farquhar',

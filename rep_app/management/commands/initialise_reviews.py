@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand, CommandError
 from rep_app.models import Review, Restaurant
-from scrapers import Reviews
-from restaurant_list import restaurant_dict
+from rep_app.scrapers import Reviews
+from rep_app.restaurant_list import restaurant_dict
 
 class Command(BaseCommand):
     

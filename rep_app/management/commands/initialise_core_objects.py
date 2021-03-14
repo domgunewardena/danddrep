@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand, CommandError
 from django.contrib.auth.models import User
 from rep_app.models import Manager, OpsDirector, Restaurant, Note
-from restaurant_list import restaurant_dict
+from rep_app.restaurant_list import restaurant_dict
 
 class Command(BaseCommand):
     

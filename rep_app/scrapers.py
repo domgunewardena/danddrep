@@ -3,7 +3,6 @@ import math
 import requests
 import time
 from datetime import datetime, date, timedelta
-from IPython.display import clear_output
 
 import json
 import pandas as pd

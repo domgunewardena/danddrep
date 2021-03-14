@@ -41,12 +41,11 @@ class OpsDirector(models.Model):
 class Restaurant(models.Model):
 
     name = models.CharField(max_length=30)
-    ops_director = models.ForeignKey(OpsDirector, on_delete=models.CASCADE)
+    opsdirector = models.ForeignKey(OpsDirector, on_delete=models.CASCADE)
     manager = models.ForeignKey(Manager, on_delete=models.CASCADE, default=1)
 
     score_categories = ['total','food','service','ambience','value']
     date_strings = [period + '_' + duration if period == 'last' else period + '_' + duration + 's' for duration in ['week', 'month'] for period in ['last','two','three','four']]
-
 
     def __str__(self):
         return str(self.name)
@@ -157,7 +156,7 @@ class Review(models.Model):
 
 class Note(models.Model):
 
-    restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
+    restaurant = models.OneToOneField(Restaurant, on_delete=models.CASCADE)
     text = models.TextField(max_length=1000, default='')
 
     def __str__(self):

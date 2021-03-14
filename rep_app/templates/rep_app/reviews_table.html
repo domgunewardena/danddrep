@@ -4,8 +4,10 @@
   <div class="table-filter-input-div" style = "width:27%">
     <select class = "form-select table-filter restaurant-dropdown" id="restaurantFilter" style = 'height:100%' name='restaurant' onchange='filterRestaurant(this.value)'>
       <option value="All Restaurants">All Restaurants</option>
-      {% for restaurant in restaurant_list %}
-        <option value="{{restaurant}}">{{restaurant}}</option>
+      {% for restaurant in restaurants %}
+        {% if user.manager and restaurant.manager == user.manager or user.opsdirector and restaurant.opsdirector == user.opsdirector or not user.manager and not user.opsdirector %}
+        <option value="{{restaurant}}">{{restaurant.name}}</option>
+        {% endif %}
       {% endfor %}
     </select>
   </div>
@@ -54,96 +56,107 @@
   </tr>
 </thead>
 {% for review in reviews %}
+  {% if user.manager and review.restaurant.manager == user.manager or user.opsdirector and review.restaurant.opsdirector == user.opsdirector or not user.manager and not user.opsdirector %}
   <!-- Assign row colour based on the score of the review -->
-  {% if review.score > 3 %}
-    <tr class = "table-success">
-  {% elif review.score == 3 %}
-    <tr class = "table-warning">
-  {% elif review.score < 3 %}
-    <tr class = "table-danger">
-  {% endif %}
-    <!-- Display the company logo of the source website of the review -->
-    <td>
-      {% load static %}
-      {% if review.source == 'Google' %}
-        <img src="{% static 'logos/google.png' %}" alt="Google Logo" title = 'This review was posted on Google'>
-      {% elif review.source == 'Tripadvisor' %}
-        <img src="{% static 'logos/tripadvisor.png' %}" alt="Tripadvisor Logo" title = 'This review was posted on Tripadvisor'>
-      {% elif review.source == 'SevenRooms' %}
-        <img src="{% static 'logos/sevenrooms.png' %}" alt="SevenRooms Logo" title = 'This review was posted on SevenRooms'>
-      {% elif review.source == 'Opentable' %}
-        <img src="{% static 'logos/opentable.png' %}" alt="Opentable Logo" title = 'This review was posted on Opentable'>
+    {% if review.score > 3 %}
+      <tr class = "table-success">
+    {% elif review.score == 3 %}
+      <tr class = "table-warning">
+    {% elif review.score < 3 %}
+      <tr class = "table-danger">
+    {% endif %}
+      <!-- Display the company logo of the source website of the review -->
+      <td>
+        <a href="{{review.link}}" target="_blank" title='Click to open the original review'>
+        {% load static %}
+          {% if review.source == 'Google' %}
+            <img src="{% static 'logos/google.png' %}" alt="Google Logo">
+          {% elif review.source == 'Tripadvisor' %}
+            <img src="{% static 'logos/tripadvisor.png' %}" alt="Tripadvisor Logo">
+          {% elif review.source == 'SevenRooms' %}
+            <img src="{% static 'logos/sevenrooms.png' %}" alt="SevenRooms Logo">
+          {% elif review.source == 'Opentable' %}
+            <img src="{% static 'logos/opentable.png' %}" alt="Opentable Logo">
+          {% else %}
+            <p>{{review.source}}</p>
+          {% endif %}
+        </a>
+      </td>
+      <td><p>{{review.restaurant}}</p></td>
+      {% if review.score > 0 %}
+        <td><p title='Overall Score'>{{review.score}}</p></td>
       {% else %}
-        <p title = 'This review was posted on {{review.source}}'>{{review.source}}</p>
+        <td><p title='Overall Score'>-</p></td>
       {% endif %}
-    </td>
-    <td><p>{{review.restaurant}}</p></td>
-    {% if review.score > 0 %}
-      <td><p title='Overall Score'>{{review.score}}</p></td>
-    {% else %}
-      <td><p title='Overall Score'>-</p></td>
-    {% endif %}
-    {% if review.food > 0 %}
-      <td><p title='Food Score'>{{review.food}}</p></td>
-    {% else %}
-      <td class='empty'><p title="This review doesn't have a Food Score">-</p></td>
-    {% endif %}
-    {% if review.service > 0 %}
-      <td><p title='Service Score'>{{review.service}}</p></td>
-    {% else %}
-      <td class='empty'><p title="This review doesn't have a Service Score">-</p></td>
-    {% endif %}
-    {% if review.ambience > 0 %}
-      <td><p title='Ambience Score'>{{review.ambience}}</p></td>
-    {% else %}
-      <td class='empty'><p title="This review doesn't have an Ambience Score">-</p></td>
-    {% endif %}
-    {% if review.value > 0 %}
-      <td><p title='Value Score'>{{review.value}}</p></td>
-    {% else %}
-      <td class='empty'><p title="This review doesn't have a Value Score">-</p></td>
-    {% endif %}
-    {% if review.text == "nan" %}
-      <td class='empty'><p title="This customer didn't leave a written review" class = 'empty-text'><i>This customer didn't write a review</i></p></td>
-    {% else %}
-      <td><p title="This is the review that the customer wrote">{{review.text}}</p></td>
-    {% endif %}
+      {% if review.food > 0 %}
+        <td><p title='Food Score'>{{review.food}}</p></td>
+      {% else %}
+        <td class='empty'><p title="This review doesn't have a Food Score">-</p></td>
+      {% endif %}
+      {% if review.service > 0 %}
+        <td><p title='Service Score'>{{review.service}}</p></td>
+      {% else %}
+        <td class='empty'><p title="This review doesn't have a Service Score">-</p></td>
+      {% endif %}
+      {% if review.ambience > 0 %}
+        <td><p title='Ambience Score'>{{review.ambience}}</p></td>
+      {% else %}
+        <td class='empty'><p title="This review doesn't have an Ambience Score">-</p></td>
+      {% endif %}
+      {% if review.value > 0 %}
+        <td><p title='Value Score'>{{review.value}}</p></td>
+      {% else %}
+        <td class='empty'><p title="This review doesn't have a Value Score">-</p></td>
+      {% endif %}
+      {% if review.text %}
+        <td title="This is the review that the customer wrote">
+          {% if review.text|length > 100 %}
+            <div class="content hideContent"><p>{{review.text}}</p></div>
+            <div class="show-more"><a href="#" onClick="return false;">Show more</a></div>
+          {% else %}
+            <p>{{review.text}}</p>
+          {% endif %}
+        </td>
+      {% else %}
+        <td class='empty'><p title="This customer didn't leave a written review" class = 'empty-text'><i>This customer didn't write a review</i></p></td>
+      {% endif %}
 
-    <!-- Display comment form to managers -->
-    {% if user.manager %}
-      <form action = "{% url 'rep_app:submit_review' review.id %}" method="post">
-      {% csrf_token %}
+      <!-- Display comment form to managers -->
+      {% if user.manager %}
+        <form action = "{% url 'rep_app:submit_review' review.id %}" method="post">
+        {% csrf_token %}
+          {% if review.comment %}
+            <td><textarea class='text-input' name="comment" required>{{review.comment}}</textarea></td>
+          {% else %}
+            <td><textarea class='text-input' name="comment" required></textarea></td>
+          {% endif %}
+        <td><input type="submit" name="Submit" value="Submit"></td>
+        </form>
+
+      <!-- Display comment text to staff/directors -->
+      {% else %}
+        <td>
         {% if review.comment %}
-          <td><textarea class='text-input' name="comment" required>{{review.comment}}</textarea></td>
+          <p title = 'This is the comment the manager has left'>{{review.comment}}</p>
         {% else %}
-          <td><textarea class='text-input' name="comment" required></textarea></td>
+          <p title = "The manager hasn't left a comment yet" class = 'empty-text'>
+          {% if review.score > 3 %}
+            <i>Managers aren't required to leave comments on reviews with more than 3 ☆s</i>
+          {% else %}
+            <i>The manager hasn't left a comment yet</i>
+          {% endif %}
+          </p>
         {% endif %}
-      <td><input type="submit" name="Submit" value="Submit"></td>
-      </form>
-
-    <!-- Display comment text to staff/directors -->
-    {% else %}
-      <td>
-      {% if review.comment %}
-        <p title = 'This is the comment the manager has left'>{{review.comment}}</p>
-      {% else %}
-        <p title = "The manager hasn't left a comment yet" class = 'empty-text'>
-        {% if review.score > 3 %}
-          <i>Managers aren't required to leave comments on reviews with more than 3 ☆s</i>
-        {% else %}
-          <i>The manager hasn't left a comment yet</i>
+        </td>
+        <td>
+        {% if review.reviewed %}
+          <p title = 'The manager has submitted this review' style = "text-align:center">✓</p>
+        {% elif review.score < 4 %}
+          <p title = "The manager hasn't submitted this review yet" style = "text-align:center">✕</p>
         {% endif %}
-        </p>
-      {% endif %}
-      </td>
-      <td>
-      {% if review.reviewed %}
-        <p title = 'The manager has submitted this review' style = "text-align:center">✓</p>
-      {% elif review.score < 4 %}
-        <p title = "The manager hasn't submitted this review yet" style = "text-align:center">✕</p>
-      {% endif %}
-      </td>
+        </td>
     {% endif %} <!-- End conditional on user (which determines whether to show comment form (to managers) or comment text (to all other users))  -->
     </tr>
+    {% endif %}
   {% endfor %} <!-- End loop through reviews -->
 </table>

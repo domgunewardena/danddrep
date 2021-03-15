@@ -57,10 +57,10 @@ class Restaurant(models.Model):
         return x/y if y != 0 else 0
 
     def get_last_week_reviews(self):
-        return Review.objects.filter(restaurant=self.id, date__gte = monday_last, date__lt = monday_this).order_by('score').only('score','food','service','value','ambience','reviewed')
+        return Review.objects.filter(restaurant=self.id, date__gte = monday_last, date__lt = monday_this).order_by('score')
 
     def get_last_week_unsubmitted_reviews(self):
-        return Review.objects.filter(restaurant=self.id, date__gte = monday_last,date__lt = monday_this, reviewed = False, score__lt = 4).order_by('score').only('score','food','service','value','ambience','reviewed')
+        return Review.objects.filter(restaurant=self.id, date__gte = monday_last,date__lt = monday_this, reviewed = False, score__lt = 4).order_by('score')
 
     def get_reviews_by_date(self, greater_than_equal_date,less_than_date):
         return Review.objects.filter(restaurant=self.id, date__gte = greater_than_equal_date, date__lt = less_than_date)

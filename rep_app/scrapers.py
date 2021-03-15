@@ -202,15 +202,18 @@ class Google(Database):
             iframe = WebDriverWait(driver, 10).until(
                 EC.presence_of_element_located((By.TAG_NAME, iframe_tag))
             )
-        finally:
             driver.switch_to.frame(iframe)
+            
+        except:
+            pass
             
         try:
             agree_to_cookies_button = WebDriverWait(driver, 10).until(
                 EC.element_to_be_clickable((By.ID, agree_to_cookies_button_id))
             )
-        finally:
             agree_to_cookies_button.click()
+        except:
+            pass
         
         return driver
     

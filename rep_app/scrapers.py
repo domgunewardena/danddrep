@@ -32,7 +32,7 @@ class Database():
         self.select_query = 'SELECT * FROM ' + table
         self.column_names = postgresql.tables['columns'][table]
         self.database = self.to_dataframe()
-        self.csv = pd.read_csv(table.capitalize() + '.csv')
+#         self.csv = pd.read_csv(table.capitalize() + '.csv')
     
     def connect_to_database(self):
         

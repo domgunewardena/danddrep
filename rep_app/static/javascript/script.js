@@ -396,19 +396,21 @@ function changeScoreCategory(clickedButton) {
 }
 
 $(".show-more a").on("click", function() {
-    var $this = $(this);
-    var $content = $this.parent().prev("div.content");
-    var linkText = $this.text().toUpperCase();
+
+    let content = $(this).parent().prev("div.content")[0];
+    let linkText = $(this).text().toUpperCase();
 
     if(linkText === "SHOW MORE"){
         linkText = "Show less";
-        $content.switchClass("hideContent", "showContent", 100);
+        content.classList.remove("hideContent");
+        content.classList.add("showContent");
     } else {
         linkText = "Show more";
-        $content.switchClass("showContent", "hideContent", 100);
+        content.classList.remove("showContent");
+        content.classList.add("hideContent");
     };
 
-    $this.text(linkText);
+    $(this).text(linkText);
 });
 
 // Archive

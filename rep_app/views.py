@@ -25,9 +25,9 @@ monday_last = monday_this - timedelta(7)
 
 def test_view(request):
 
-    restaurants = Restaurant.objects.all()
+    # restaurants = Restaurant.objects.all()
     notes = Note.objects.all()
-    context = {'restaurants':restaurants, 'notes':notes}
+    context = {'notes':notes}
 
     return render(request, 'rep_app/test.html', context)
 

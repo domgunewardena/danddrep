@@ -1,4 +1,5 @@
 import smtplib, ssl
+from django.core.mail import EmailMultiAlternatives
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import os
@@ -15,29 +16,33 @@ class AppEmail:
 
     def send(self):
 
-        sender_email = "domgunewardenadev@gmail.com"
-        receiver_email = self.recipient
-        password = os.environ.get('EMAIL_PASSWORD')
+        msg = EmailMultiAlternatives(self.subject, self.text, self.sender, [self.recipient])
+        msg.attach_alternative(self.html, 'text/html')
+        msg.send()
 
-        message = MIMEMultipart("alternative")
-        message["Subject"] = self.subject
-        message["From"] = 'D&D Rep'
-        message["To"] = self.recipient
-
-        part1 = MIMEText(self.text, "plain")
-        part2 = MIMEText(self.html, "html")
-
-        message.attach(part1)
-        message.attach(part2)
-
-        context = ssl.create_default_context()
-        with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
-            server.login(sender_email, password)
-            server.sendmail(
-                sender_email,
-                receiver_email,
-                message.as_string()
-            )
+        # sender_email = "domgunewardenadev@gmail.com"
+        # receiver_email = self.recipient
+        # password = os.environ.get('EMAIL_PASSWORD')
+        #
+        # message = MIMEMultipart("alternative")
+        # message["Subject"] = self.subject
+        # message["From"] = 'D&D Rep'
+        # message["To"] = self.recipient
+        #
+        # part1 = MIMEText(self.text, "plain")
+        # part2 = MIMEText(self.html, "html")
+        #
+        # message.attach(part1)
+        # message.attach(part2)
+        #
+        # context = ssl.create_default_context()
+        # with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
+        #     server.login(sender_email, password)
+        #     server.sendmail(
+        #         sender_email,
+        #         receiver_email,
+        #         message.as_string()
+        #     )
 
 class NoteNotification:
 

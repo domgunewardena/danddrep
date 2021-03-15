@@ -395,23 +395,44 @@ function changeScoreCategory(clickedButton) {
   }
 }
 
-$(".show-more a").on("click", function() {
+function toggleTextDisplay(element) {
 
-    let content = $(this).parent().prev("div.content")[0];
-    let linkText = $(this).text().toUpperCase();
+  let content = element.parentElement.parentElement.getElementsByClassName('content')[0];
+  let linkText = element.text.toUpperCase();
 
-    if(linkText === "SHOW MORE"){
-        linkText = "Show less";
-        content.classList.remove("hideContent");
-        content.classList.add("showContent");
-    } else {
-        linkText = "Show more";
-        content.classList.remove("showContent");
-        content.classList.add("hideContent");
-    };
+  if (linkText === "SHOW MORE"){
+      linkText = "Show less";
+      content.classList.remove("hideContent");
+      content.classList.add("showContent");
+  } else {
+      linkText = "Show more";
+      content.classList.remove("showContent");
+      content.classList.add("hideContent");
+  };
 
-    $(this).text(linkText);
-});
+  element.text = linkText
+
+  return false;
+
+}
+
+// document.getElementsByClassName('show-more').on("click", function() {
+//
+//     let content = $(this).parent().prev("div.content")[0];
+//     let linkText = $(this).text().toUpperCase();
+//
+//     if(linkText === "SHOW MORE"){
+//         linkText = "Show less";
+//         content.classList.remove("hideContent");
+//         content.classList.add("showContent");
+//     } else {
+//         linkText = "Show more";
+//         content.classList.remove("showContent");
+//         content.classList.add("hideContent");
+//     };
+//
+//     $(this).text(linkText);
+// });
 
 // Archive
 

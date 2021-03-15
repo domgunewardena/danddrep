@@ -112,7 +112,7 @@
         <td title="This is the review that the customer wrote">
           {% if review.text|length > 100 %}
             <div class="content hideContent"><p>{{review.text}}</p></div>
-            <div class="show-more"><a href="#" onClick="return false;">Show more</a></div>
+            <div class="show-more"><a href="#/" onClick="toggleTextDisplay(this);">Show more</a></div>
           {% else %}
             <p>{{review.text}}</p>
           {% endif %}

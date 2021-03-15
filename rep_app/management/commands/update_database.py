@@ -18,10 +18,10 @@ class Command(BaseCommand):
         
         def open_driver():
             
-            GOOGLE_CHROME_PATH = '/app/.apt/usr/bin/google_chrome'
             CHROMEDRIVER_PATH = '/app/.chromedriver/bin/chromedriver'
+            chrome_bin = os.environ.get('GOOGLE_CHROME_SHIM', None)
             options = webdriver.ChromeOptions()
-            options.binary_location = GOOGLE_CHROME_PATH
+            options.binary_location = chrome_bin
             options.add_argument(' — disable-gpu')
             options.add_argument(' — no-sandbox')
             options.add_argument(' — headless')

@@ -76,7 +76,7 @@ class NoteNotification:
             font-family:Arial;
             ">
               <p style="
-              font-size:30px;
+              font-size:20px;
               font-family:Helvetica;
               color:white;
               ">
@@ -93,7 +93,7 @@ class NoteNotification:
             width:80%;
             font-family:Arial;
             ">
-              <p style="font-size:25px;">
+              <p style="font-size:15px;">
                 Annabel has left you a new note on """ + self.restaurant + """'s reviews from last week:
               </p>
 
@@ -103,7 +103,7 @@ class NoteNotification:
               margin-top:10px;
               '>
 
-              <p style="font-size:25px;">
+              <p style="font-size:15px;">
                 '""" + self.note + """'
               </p>
 
@@ -113,7 +113,7 @@ class NoteNotification:
               margin-top:10px;
               '>
 
-              <p style="font-size:25px;">
+              <p style="font-size:15px;">
                 To submit your comments on last week's reviews, just click on the button below
               </p>
 
@@ -127,7 +127,7 @@ class NoteNotification:
               style="
               background-color:green;
               padding:10px 20px 10px 20px;
-              font-size:25px;
+              font-size:20px;
               color:white;
               ">
               <a

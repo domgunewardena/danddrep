@@ -198,22 +198,22 @@ class Google(Database):
         
         driver.get(url)
         
-        try:
-            iframe = WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located((By.TAG_NAME, iframe_tag))
-            )
-            driver.switch_to.frame(iframe)
+#         try:
+#             iframe = WebDriverWait(driver, 10).until(
+#                 EC.presence_of_element_located((By.TAG_NAME, iframe_tag))
+#             )
+#             driver.switch_to.frame(iframe)
             
-        except:
-            pass
+#         except:
+#             pass
             
-        try:
-            agree_to_cookies_button = WebDriverWait(driver, 10).until(
-                EC.element_to_be_clickable((By.ID, agree_to_cookies_button_id))
-            )
-            agree_to_cookies_button.click()
-        except:
-            pass
+#         try:
+#             agree_to_cookies_button = WebDriverWait(driver, 10).until(
+#                 EC.element_to_be_clickable((By.ID, agree_to_cookies_button_id))
+#             )
+#             agree_to_cookies_button.click()
+#         except:
+#             pass
         
         return driver
     
@@ -841,8 +841,8 @@ class Opentable(Database):
                     
         self.driver.get(url)            
         
-        if self.name == '100 Wardour Street Club':
-            clear_cookies(self.driver, 10)
+#         if self.name == '100 Wardour Street Club':
+#             clear_cookies(self.driver, 10)
         
         click_read_more_buttons(self.driver)
         

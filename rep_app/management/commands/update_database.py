@@ -24,32 +24,38 @@ class Command(BaseCommand):
             
         try:
             
+            print('Creating Reviews scraper')
             reviews = Reviews()
+            
+            print('Getting new reviews...')
             new_reviews = reviews.get_new_reviews()
             
             for new_review in new_reviews:
                 
                 restaurant_id = get_restaurant_id(new_review['restaurant'])
                 
-                new_review_object = Review(
-                    source = new_review['source'],
-                    restaurant = Restaurant.objects.filter(id=restaurant_id)[0],
-                    title = new_review['title'][:50],
-                    date = new_review['date'],
-                    visit_date = new_review['visit_date'],
-                    score = new_review['score'],
-                    food = new_review['food'],
-                    service = new_review['service'],
-                    value = new_review['value'],
-                    ambience = new_review['ambience'],
-                    text = new_review['review'][:10000],
-                    link = new_review['link']
-                )
-                    
-                new_review_object.save()
-                    
-                self.stdout.write(self.style.SUCCESS('Review successfully created'))
+                if restaurant_id:
                 
+                    new_review_object = Review(
+                        source = new_review['source'],
+                        restaurant = Restaurant.objects.filter(id=restaurant_id)[0],
+                        title = new_review['title'][:50],
+                        date = new_review['date'],
+                        visit_date = new_review['visit_date'],
+                        score = new_review['score'],
+                        food = new_review['food'],
+                        service = new_review['service'],
+                        value = new_review['value'],
+                        ambience = new_review['ambience'],
+                        text = new_review['review'][:10000],
+                        link = new_review['link']
+                    )
+
+                    new_review_object.save()
+
+                    self.stdout.write(self.style.SUCCESS('Review successfully created'))
+                    
+            print('Updating database')
             reviews.update_database()
             
         except Exception as err:

@@ -1,5 +1,4 @@
 import smtplib, ssl
-from django.core.mail import EmailMultiAlternatives
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import os
@@ -26,7 +25,7 @@ class AppEmail:
 
         message = MIMEMultipart("alternative")
         message["Subject"] = self.subject
-        message["From"] = 'D&D Rep'
+        message["From"] = self.sender
         message["To"] = self.recipient
 
         part1 = MIMEText(self.text, "plain")
@@ -53,8 +52,17 @@ class NoteNotification:
         self.note = note
         self.app_url = app_url
 
+        self.possessive = self.get_possessive()
         self.html = self.generate_html()
         self.text = self.generate_text()
+
+    def get_possessive(self):
+
+        if self.restaurant[len(self.restaurant)-1] == 's':
+            return "'"
+        else:
+            return  "'s"
+
 
     def generate_html(self):
 
@@ -94,7 +102,7 @@ class NoteNotification:
             font-family:Arial;
             ">
               <p style="font-size:15px;">
-                Annabel has left you a new note on """ + self.restaurant + """'s reviews from last week:
+                Annabel has left you a new note on """ + self.restaurant + self.possessive + """ reviews from last week:
               </p>
 
               <br style='
@@ -114,7 +122,7 @@ class NoteNotification:
               '>
 
               <p style="font-size:15px;">
-                To submit your comments on last week's reviews, just click on the button below
+                To open the app and submit your comments on last week's reviews, just click on the button below
               </p>
 
               <br style='
@@ -151,7 +159,7 @@ class NoteNotification:
         return """
         Hi """ + self.manager + """,
 
-        Annabel has left a new note on """ + self.restaurant + """'s reviews from last week:
+        Annabel has left a new note on """ + self.restaurant + self.possessive + """ reviews from last week:
 
         '""" + self.note + """'
 

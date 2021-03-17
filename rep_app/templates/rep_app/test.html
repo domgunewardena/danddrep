@@ -8,16 +8,16 @@
   <h1>{{user.manager.restaurant_set.first}}</h1>
 {% endif %}
 
-{% for note in notes %}
+<!-- {% for note in notes %}
   <h2>{{note.text}}</h2>
   <h2>{{note.restaurant}}</h2>
-{% endfor %}
+{% endfor %} -->
 {% for restaurant in restaurants %}
   <h2>{{restaurant}}</h2>
-  <h2>{{restaurant.manager}}</h2>
-  <h2>{{restaurant.note.text}}</h2>
-  <h2>{{restaurant.get_stats}}</h2>
-  <h2>{{restaurant.get_scores}}</h2>
+  <!-- <h2>{{restaurant.manager}}</h2>
+  <h2>{{restaurant.note.text}}</h2> -->
+  <!-- <h2>{{restaurant.get_stats}}</h2>
+  <h2>{{restaurant.get_scores}}</h2> -->
 {% endfor %}
 <!-- {% for restaurant, value_dicts in stats.items %}
   <h1>{{restaurant}}</h1>

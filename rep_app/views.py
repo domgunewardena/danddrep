@@ -21,31 +21,68 @@ today = date.today()-timedelta(365)
 monday_this = today - timedelta(today.weekday())
 monday_last = monday_this - timedelta(7)
 
+# Filtering functions
+
+def filter_restaurants(request):
+
+    try:
+        restaurants = request.user.manager.restaurant_set.all()
+    except ObjectDoesNotExist:
+        try:
+            restaurants = request.user.opsdirector.restaurant_set.all()
+        except:
+            restaurants = Restaurant.objects.all()
+
+    return restaurants
+
+def filter_reviews_by_restaurant(request,reviews):
+
+    try:
+        reviews = reviews.filter(restaurant = request.user.manager.restaurant_set.first())
+    except ObjectDoesNotExist:
+        try:
+            reviews = reviews.filter(restaurant__in = request.user.manager.restaurant_set.all())
+        except ObjectDoesNotExist:
+            pass
+
+    return reviews
+
+def filter_reviews_by_submitted(request,reviews):
+
+    try:
+        request.user.manager
+        reviews = reviews.filter(reviewed = False)
+    except ObjectDoesNotExist:
+        if request.user.is_staff:
+            reviews = reviews.filter(reviewed = False)
+        else:
+            pass
+
+    return reviews
+
+
 # Create your views here.
 
 def test_view(request):
 
-    # restaurants = Restaurant.objects.all()
-    notes = Note.objects.all()
-    context = {'notes':notes}
+    restaurants = Restaurant.objects.all()
+    # notes = Note.objects.all()
+    context = {'restaurants':restaurants}
 
     return render(request, 'rep_app/test.html', context)
 
 @login_required
 def home_view(request):
 
-    restaurants = Restaurant.objects.all()
-    reviews = Review.objects.filter(date__lt = monday_this, date__gte = monday_last).order_by('score', 'restaurant')
+    reviews = Review.objects.filter(
+        date__lt = monday_this,
+        date__gte = monday_last,
+        score__lt = 4
+    ).order_by('score', 'restaurant')
 
-    # If user is manager or staff, filter reviews by unsubmitted and below 4
-    # If user is manager, also filter reviews by restaurant
-    try:
-        reviews = reviews.filter(reviewed = False, score__lt = 4, restaurant = request.user.manager.restaurant_set.first()) # If user is manager
-    except ObjectDoesNotExist:
-        if request.user.is_staff:
-            reviews = reviews.filter(reviewed = False, score__lt = 4) # If user is staff
-        else:
-            pass # If user isn't manager or staff
+    restaurants = filter_restaurants(request)
+    reviews = filter_reviews_by_restaurant(request,reviews)
+    reviews = filter_reviews_by_submitted(request,reviews)
 
     context = {'restaurants':restaurants,'reviews':reviews}
 
@@ -54,14 +91,9 @@ def home_view(request):
 @login_required
 def reviews_view(request):
 
-    restaurants = Restaurant.objects.all()
     reviews = Review.objects.filter(date__lt = monday_this, date__gte = monday_last).order_by('score', 'restaurant')
-
-    # If user is manager, filter reviews by restaurant
-    try:
-        reviews = reviews.filter(restaurant = request.user.manager.restaurant_set.first())
-    except ObjectDoesNotExist:
-        pass
+    restaurants = filter_restaurants(request)
+    reviews = filter_reviews_by_restaurant(request,reviews)
 
     context = {'reviews':reviews,'restaurants':restaurants}
 
@@ -70,7 +102,8 @@ def reviews_view(request):
 @login_required
 def scores_view(request):
 
-    restaurants = Restaurant.objects.all()
+    restaurants = filter_restaurants(request)
+
     context = {'restaurants':restaurants}
 
     return render(request, 'rep_app/scores.html', context)

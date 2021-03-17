@@ -10,7 +10,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import send_mail
 
 from rep_app.models import Manager, OpsDirector, Restaurant, Review, Note
-from rep_app.emails import AppEmail, NoteNotification
+from rep_app.emails import AppEmail, NoteNotification, NudgeNotification, SubmittedNotification, ReviewsNotification
 
 from datetime import date, time, datetime, timedelta
 
@@ -20,6 +20,10 @@ today = date.today()
 today = date.today()-timedelta(365)
 monday_this = today - timedelta(today.weekday())
 monday_last = monday_this - timedelta(7)
+
+# App URL
+
+app_url = 'http://127.0.0.1:8000/'
 
 # Filtering functions
 
@@ -116,10 +120,25 @@ def scores_view(request):
 def submit_review(request, review_id):
 
     if request.method == "POST":
+
         review = get_object_or_404(Review, pk=review_id)
         review.comment = request.POST['comment']
         review.reviewed = True
         review.save()
+
+        ops_director = review.restaurant.opsdirector
+        no_of_unsubmitted_reviews = sum([len(restaurant.get_last_week_unsubmitted_reviews()) for restaurant in ops_director.restaurant_set.all()])
+
+        if no_of_unsubmitted_reviews == 0:
+
+            subject = 'Your reviews have been submitted'
+            recipient = 'domgunewardena@gmail.com'
+            email_text = SubmittedNotification(ops_director.user.first_name, app_url)
+            html = email_text.html
+            text = email_text.text
+
+            email = AppEmail(subject, recipient, html, text)
+            email.send()
 
     return home_page(request)
 
@@ -134,20 +153,40 @@ def update_note(request, note_id):
 
         manager = note.restaurant.manager.user.first_name
         restaurant = note.restaurant.name
-        app_url = 'http://127.0.0.1:8000/'
-        email_note = NoteNotification(restaurant, manager, note.text, app_url)
 
         subject = restaurant + ' has a new note'
         recipient = 'domgunewardena@gmail.com'
-        html = email_note.html
-        text = email_note.text
+        email_text = NoteNotification(restaurant, manager, note.text, app_url)
+        html = email_text.html
+        text = email_text.text
 
         email = AppEmail(subject, recipient, html, text)
-
         email.send()
 
     return reviews_view(request)
 
+@login_required
+def nudge(request):
+
+    restaurants = Restaurants.objects.all()
+
+    for restaurant in restaurants:
+
+        if len(restaurant.get_last_week_unsubmitted_reviews()) > 0:
+
+            restaurant_name = restaurant.name
+            manager = restaurant.manager.user.first_name
+
+            subject = 'Annabel has nudged you'
+            recipient = 'domgunewardena@gmail.com'
+            email_text = NudgeNotification(restaurant_name, manager, app_url)
+            html = email_text.html
+            text = email_text.text
+
+            email = AppEmail(subject, recipient, html, text)
+            email.send()
+
+    return home_view(request)
 
 # User Login Views
 

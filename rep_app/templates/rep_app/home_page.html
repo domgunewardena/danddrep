@@ -54,7 +54,6 @@
   </tr>
   </thead>
   {% for restaurant in restaurants %} <!-- Loop through restaurants -->
-    {% if user.manager and restaurant.manager == user.manager or user.opsdirector and restaurant.opsdirector == user.opsdirector or not user.manager and not user.opsdirector %} <!-- Conditional logic on user to determine whether the restaurant is relevant to them -->
       <tr>
         <td><p style = "text-align:left;">{{restaurant}}</p></td>
         {% for category, values in restaurant.get_stats.scores.items %} <!-- Loop through categories -->
@@ -121,7 +120,6 @@
         {% endif %}
 
       </tr>
-    {% endif %}
   {% endfor %}
 </table>
 
@@ -131,7 +129,7 @@
   <div class="jumbotron no-button-jumbotron">
     <div class="container">
       {% if not user.is_staff and not user.manager %}
-        <a class="btn btn-danger btn-lg" href="{% url 'scores' %}" role="button">Scores</a>
+        <a class="btn btn-danger btn-lg" href="{% url 'rep_app:scores' %}" role="button">Scores</a>
         <hr>
       {% endif %}
 
@@ -167,7 +165,7 @@
           <a class="btn btn-primary btn-lg" style="margin-right:10px;" href="{% url 'reviews' %}" role="button">Reviews</a>
         </div>
         <div style="display:table-cell;">
-          <a class="btn btn-danger btn-lg" href="{% url 'scores' %}" role="button">Scores</a>
+          <a class="btn btn-danger btn-lg" href="{% url 'rep_app:scores' %}" role="button">Scores</a>
         </div>
       </div>
     </div>

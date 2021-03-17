@@ -140,7 +140,20 @@ def submit_review(request, review_id):
             email = AppEmail(subject, recipient, html, text)
             email.send()
 
-    return home_page(request)
+        no_of_unsubmitted_reviews = sum([len(restaurant.get_last_week_unsubmitted_reviews()) for restaurant in Restaurant.objects.all()])
+
+        if no_of_unsubmitted_reviews == 0:
+
+            subject = 'All reviews have been submitted'
+            recipient = 'domgunewardena@gmail.com'
+            email_text = SubmittedNotification('Annabel', app_url)
+            html = email_text.html
+            text = email_text.text
+
+            email = AppEmail(subject, recipient, html, text)
+            email.send()
+
+    return home_view(request)
 
 @login_required
 def update_note(request, note_id):
@@ -166,9 +179,9 @@ def update_note(request, note_id):
     return reviews_view(request)
 
 @login_required
-def nudge(request):
+def nudge_view(request):
 
-    restaurants = Restaurants.objects.all()
+    restaurants = Restaurant.objects.all()
 
     for restaurant in restaurants:
 

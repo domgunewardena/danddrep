@@ -19,13 +19,7 @@ from rep_app import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('',views.home_view,name='home_page'),
-    path('reviews/',views.reviews_view,name='reviews'),
-    path('scores/',views.scores_view,name='scores'),
-    path('test/',views.test_view,name='test_view'),
-    re_path('submit_review/', include('rep_app.urls', namespace='submit')),
-    re_path('update_note/', include('rep_app.urls', namespace='rep_app')),
+    re_path(r'', include('rep_app.urls', namespace='rep_app')),
     re_path(r'login/',views.user_login,name='user_login'),
     re_path(r'logout/$',views.user_logout,name='logout'),
-
 ]

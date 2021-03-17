@@ -15,10 +15,6 @@ class AppEmail:
 
     def send(self):
 
-        # msg = EmailMultiAlternatives(self.subject, self.text, self.sender, [self.recipient])
-        # msg.attach_alternative(self.html, 'text/html')
-        # msg.send()
-
         sender_email = "domgunewardenadev@gmail.com"
         receiver_email = self.recipient
         password = os.environ.get('EMAIL_PASSWORD')

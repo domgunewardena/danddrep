@@ -154,7 +154,7 @@ def update_note(request, note_id):
 @login_required
 def user_logout(request):
     logout(request)
-    return HttpResponseRedirect(reverse('home_page'))
+    return HttpResponseRedirect(reverse('rep_app:home_page'))
 
 def register(request):
 
@@ -194,7 +194,7 @@ def user_login(request):
         if user:
             if user.is_active:
                 login(request,user)
-                return HttpResponseRedirect(reverse('home_page'))
+                return HttpResponseRedirect(reverse('rep_app:home_page'))
 
             else:
                 return HttpReponse('ACCOUNT NOT ACTIVE')

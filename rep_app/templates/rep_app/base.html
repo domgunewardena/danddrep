@@ -15,15 +15,17 @@
   </head>
   <body>
     <nav class="navbar navbar-expand-md navbar-dark bg-dark">
-      <a class="navbar-brand" href="{% url 'home_page' %}">D&D Rep</a>
+      <a class="navbar-brand" href="{% url 'rep_app:home_page' %}">D&D Rep</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
+      {% if user.is_authenticated %}
       <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2">
         <ul class="navbar-nav mr-auto">
-          <li class="nav-item"><a class="nav-link" href="{% url 'scores' %}">Scores</a></li>
-          <li class="nav-item"><a class="nav-link" href="{% url 'reviews' %}">Reviews</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'rep_app:scores' %}">Scores</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'rep_app:reviews' %}">Reviews</a></li>
         </ul>
+      {% endif %}
       </div>
       <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
         <ul class="navbar-nav ml-auto">

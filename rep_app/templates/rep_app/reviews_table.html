@@ -56,7 +56,6 @@
   </tr>
 </thead>
 {% for review in reviews %}
-  {% if user.manager and review.restaurant.manager == user.manager or user.opsdirector and review.restaurant.opsdirector == user.opsdirector or not user.manager and not user.opsdirector %}
   <!-- Assign row colour based on the score of the review -->
     {% if review.score > 3 %}
       <tr class = "table-success">
@@ -157,6 +156,5 @@
         </td>
     {% endif %} <!-- End conditional on user (which determines whether to show comment form (to managers) or comment text (to all other users))  -->
     </tr>
-    {% endif %}
   {% endfor %} <!-- End loop through reviews -->
 </table>

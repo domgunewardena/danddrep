@@ -6,7 +6,9 @@
 
   <div class="jumbotron no-button-jumbotron">
     <div class="container">
-      <p class = "lead">Here's the review breakdown plus the notes that the other users see - type in the boxes & click Update to change them! </p>
+      <p class = "lead">
+        Here's the review breakdown plus the notes that the other users see - type in the boxes & click Update to change them!
+      </p>
     </div>
   </div>
 
@@ -45,16 +47,20 @@
         <th><p></p></th>
       </tr>
     </thead>
-    {% for restaurant in restaurants %} <!-- Loop through categories -->
+    {% for restaurant in restaurants %} <!-- Loop through restaurants -->
       {% with stats=restaurant.get_stats %} <!-- Cache stats -->
         <tr>
           <td><p style = "text-align:left;">{{restaurant}}</p></td>
           {% for category, values in stats.scores.items %} <!-- Loop through categories -->
             {% if values.average == 0 %} <!-- Conditional on whether any reviews were left for this category -->
               {% if category == 'total' %} <!-- Conditional on whether category is total & so whether empty title should include category or not -->
-                <td><p title = 'No guests left a review'>-</p></td>
+                <td>
+                  <p title = 'No guests left a review'>-</p>
+                </td>
               {% else %}
-                <td><p title = 'No guests left a {{category}} score'>-</p></td>
+                <td>
+                  <p title = 'No guests left a {{category}} score'>-</p>
+                </td>
               {% endif %} <!-- End conditional on whether category is total -->
             {% else %}
               {% if values.average >= 4.5 %} <!-- Conditional on average score to determine cell colour -->
@@ -68,10 +74,14 @@
             {% endif %} <!-- End conditional on whether any reviews were left for this category -->
           {% endfor %} <!-- End loop through categories -->
 
-          <td><p>{{stats.scores.total.total}}</p></td>
-          <td><p title = "{{stats.below_4.reviews_below_4}} reviews had 3 ★s or less">
-            {{stats.below_4.reviews_below_4}}
-          </p></td>
+          <td>
+            <p>{{stats.scores.total.total}}</p>
+          </td>
+          <td>
+            <p title = "{{stats.below_4.reviews_below_4}} reviews had 3 ★s or less">
+              {{stats.below_4.reviews_below_4}}
+            </p>
+          </td>
           {% if stats.below_4.reviews_below_4_p < 10 %} <!-- Conditional on % of below 4 reviews to determine cell colour -->
             <td class = "table-success">
           {% else %}
@@ -79,22 +89,29 @@
           {% endif %} <!-- End conditional on % of below 4 reviews to determine cell colour -->
             <p title = "{{stats.below_4.reviews_below_4_p}}% of reviews had 3 ★s or less">
               {{stats.below_4.reviews_below_4_p}}%
-            </p></td>
+            </p>
+          </td>
 
           <!-- Notes Input -->
           <form action = "{% url 'rep_app:update_note' restaurant.note.id %}" method="post">
             {% csrf_token %}
             {% if restaurant.note.text %} <!-- Conditional on whether note has any text -->
-              <td><input type='text' class='text-input' name="note" value = "{{restaurant.note.text}}"></input></td>
+              <td>
+                <input type='text' class='text-input' name="note" value = "{{restaurant.note.text}}"></input>
+              </td>
             {% else %}
-              <td><input type='text' class='text-input' name="note"></input></td>
+              <td>
+                <input type='text' class='text-input' name="note"></input>
+              </td>
             {% endif %} <!-- End conditional on whether note has any text -->
-            <td><button type="submit" class='btn btn-primary note-submit' name="Update" value="Update">Update</button></td>
+            <td>
+              <button type="submit" class='btn btn-primary note-submit' name="Update" value="Update">Update</button>
+            </td>
           </form>
         </tr>
-        {% endwith %} <!-- End stats variable cache -->
-      {% endfor %} <!-- End loop through restaurants -->
-    </table>
+      {% endwith %} <!-- End stats variable cache -->
+    {% endfor %} <!-- End loop through restaurants -->
+  </table>
 {% endif %} <!-- End logic for showing notes table to staff -->
 
 <!-- Review List Jumbotron -->

@@ -117,10 +117,10 @@
           {% else %}
             <td></td>
           {% endif %}
-        {% endif %}
+        {% endif %} <!-- End conditional on whether user is staff -->
 
       </tr>
-  {% endfor %}
+  {% endfor %} <!-- End loop through restaurants -->
 </table>
 
 <!-- Review List Jumbotron -->
@@ -128,10 +128,12 @@
 {% if reviews.count > 0 %}
   <div class="jumbotron no-button-jumbotron">
     <div class="container">
-      {% if not user.is_staff and not user.manager %}
+      {% if user.is_staff %}
+        <a class="btn btn-danger btn-lg" href="{% url 'rep_app:nudge' %}" role="button" onclick="alert('Nudging may take a little while - wait for the page to reload to continue')">Nudge</a>
+      {% elif not user.is_staff and not user.manager %}
         <a class="btn btn-danger btn-lg" href="{% url 'rep_app:scores' %}" role="button">Scores</a>
-        <hr>
       {% endif %}
+      <hr>
 
       <p class = "lead">
         {% if user.manager %}
@@ -141,7 +143,7 @@
             Here are the reviews you still need to comment on - type a comment in the boxes & click Submit to clear them!
           {% endif %}
         {% elif user.is_staff %}
-          Here are the reviews that managers still haven't submitted
+          Here are the reviews that managers still haven't submitted - click above to nudge the managers with outstanding submissions
         {% else %}
           Here are last week's reviews that had scores of 3 and under - click above to see the scores from the last few weeks and months
         {% endif %}
@@ -158,14 +160,16 @@
           All reviews have been submitted! Click below to see all of the reviews from last week, or scores from the last few weeks and months
         {% elif user.manager %}
           Thanks for submitting your reviews! Click below to see all of {{user.manager.restaurant}}'s reviews from last week, or scores from the last few weeks and months
+        {% else %}
+          Click below to see all of the reviews from last week, or scores from the last few weeks and months
         {% endif %}
       </p>
       <div style='display:table;'>
         <div style="display:table-cell;">
-          <a class="btn btn-primary btn-lg" style="margin-right:10px;" href="{% url 'reviews' %}" role="button">Reviews</a>
+          <a class="btn btn-primary btn-lg" href="{% url 'rep_app:reviews' %}" role="button" style="margin-right:10px;" >Reviews</a>
         </div>
         <div style="display:table-cell;">
-          <a class="btn btn-danger btn-lg" href="{% url 'rep_app:scores' %}" role="button">Scores</a>
+          <a class="btn btn-danger btn-lg" href="{% url 'rep_app:scores' %}" role="button" >Scores</a>
         </div>
       </div>
     </div>

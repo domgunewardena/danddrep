@@ -45,7 +45,7 @@ def filter_reviews_by_restaurant(request,reviews):
         reviews = reviews.filter(restaurant = request.user.manager.restaurant_set.first())
     except ObjectDoesNotExist:
         try:
-            reviews = reviews.filter(restaurant__in = request.user.manager.restaurant_set.all())
+            reviews = reviews.filter(restaurant__in = request.user.opsdirector.restaurant_set.all())
         except ObjectDoesNotExist:
             pass
 

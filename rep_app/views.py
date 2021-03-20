@@ -90,6 +90,15 @@ def home_view(request):
 
     context = {'restaurants':restaurants,'reviews':reviews}
 
+    try:
+        request.user.manager
+    except ObjectDoesNotExist:
+        try:
+            request.user.opsdirector
+        except ObjectDoesNotExist:
+            if not request.user.is_staff:
+                context = {'restaurants':restaurants}
+
     return render(request, 'rep_app/home_page.html', context)
 
 @login_required

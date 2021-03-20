@@ -1373,7 +1373,10 @@ class Reviews(Database):
         
         df = all_df[self.columns]
         
-        df['date'] = pd.to_datetime(df['date'])
+        date_columns = ['date','visit_date']
+        
+        for date_column in date_columns:
+            df[date_column] = pd.to_datetime(df[date_column])
         df['review'] = df['review'].fillna('')
         
         score_strings = ['score','food','service','value','ambience']

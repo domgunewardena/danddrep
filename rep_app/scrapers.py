@@ -102,7 +102,12 @@ class Database():
         
     def add_reviews_to_database(self, new_reviews):
         
+        import math
+        
         for review in new_reviews:
+            
+            if math.isnan(review['visit_date']):
+                del(review['visit_date'])
             
             keys = review.keys()
             table = self.table
@@ -233,8 +238,6 @@ class Google(Database):
                 driver.get(url)
                 print('Assigning sort button...')
                 sort_button = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, sort_button_path)))
-                print('Clicking sort button...')
-                sort_button.click()
                 
             except TimeoutException as err:
                 error = str(err)
@@ -248,10 +251,10 @@ class Google(Database):
             
             try:
                 error = False
+                print('Clicking sort button...')
+                sort_button.click()
                 print('Assigning newest button...')
                 newest_button = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, newest_button_path)))
-                print('Clicking newest button...')
-                newest_button.click()
                 
             except TimeoutException as err:
                 error = str(err)
@@ -265,6 +268,8 @@ class Google(Database):
             
             try:
                 error = False
+                print('Clicking newest button...')
+                newest_button.click()
                 print('Waiting for sorted reviews to load')
                 WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CLASS_NAME, review_titles_class)))
                 print('Saving soup...')
@@ -1332,12 +1337,19 @@ class Reviews(Database):
             df['restaurant'] = df['restaurant'].map(restaurant_map)
             return df
         
+        def format_dates(df):
+            
+            df['date'] = pd.to_datetime(df['date'], dayfirst=True).dt.strftime("%d %B %Y")            
+            return df
+        
         current_df = self.table_to_dataframe('sevenrooms')
         
-        df = map_restaurants(
-            add_source(
-                rename_columns(
-                    current_df
+        df = format_dates(
+            map_restaurants(
+                add_source(
+                    rename_columns(
+                        current_df
+                    )
                 )
             )
         )
@@ -1373,10 +1385,8 @@ class Reviews(Database):
         
         df = all_df[self.columns]
         
-        date_columns = ['date','visit_date']
-        
-        for date_column in date_columns:
-            df[date_column] = pd.to_datetime(df[date_column])
+        df['date'] = pd.to_datetime(df['date'])
+        df['visit_date'] = df['visit_date'].apply(str)
         df['review'] = df['review'].fillna('')
         
         score_strings = ['score','food','service','value','ambience']

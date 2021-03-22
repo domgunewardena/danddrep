@@ -173,17 +173,19 @@ def update_note(request, note_id):
         note.text = request.POST['note']
         note.save()
 
-        manager = note.restaurant.manager.user.first_name
-        restaurant = note.restaurant.name
+        if request.POST['note'] != '':
 
-        subject = restaurant + ' has a new note'
-        recipient = 'domgunewardena@gmail.com'
-        email_text = NoteNotification(restaurant, manager, note.text, app_url)
-        html = email_text.html
-        text = email_text.text
+            manager = note.restaurant.manager.user.first_name
+            restaurant = note.restaurant.name
 
-        email = AppEmail(subject, recipient, html, text)
-        email.send()
+            subject = restaurant + ' has a new note'
+            recipient = 'domgunewardena@gmail.com'
+            email_text = NoteNotification(restaurant, manager, note.text, app_url)
+            html = email_text.html
+            text = email_text.text
+
+            email = AppEmail(subject, recipient, html, text)
+            email.send()
 
     return redirect('rep_app:reviews')
 

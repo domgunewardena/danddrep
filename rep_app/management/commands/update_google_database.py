@@ -3,8 +3,9 @@ import os
 
 from django.core.management.base import BaseCommand, CommandError
 
-from rep_app.scrapers import Google
 import rep_app.restaurant_urls as restaurant_urls
+
+from rep_app.scraping.scrapers import Google
 
 from selenium import webdriver
 

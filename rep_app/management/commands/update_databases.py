@@ -2,11 +2,12 @@ from datetime import date, timedelta
 import os
 
 from django.core.management.base import BaseCommand, CommandError
-from rep_app.models import Review, Restaurant
 
-from rep_app.scrapers import Google, Tripadvisor, Opentable, SevenRooms, Reviews
+from rep_app.models import Review, Restaurant
 from rep_app.restaurant_list import restaurant_dict
-import rep_app.restaurant_urls as restaurant_urls
+
+from rep_app.scraping.scrapers import Google, Tripadvisor, Opentable, SevenRooms, Reviews
+import rep_app.scraping.restaurant_urls as restaurant_urls
 
 from selenium import webdriver
 

@@ -102,12 +102,12 @@ class Database():
         
     def add_reviews_to_database(self, new_reviews):
         
-        import math
+#         import math
         
         for review in new_reviews:
             
-            if math.isnan(review['visit_date']):
-                del(review['visit_date'])
+#             if math.isnan(review['visit_date']):
+#                 del(review['visit_date'])
             
             keys = review.keys()
             table = self.table

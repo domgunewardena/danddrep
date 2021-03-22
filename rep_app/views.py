@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse, reverse_lazy
 from django.views.generic import View, TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
@@ -162,7 +162,7 @@ def submit_review(request, review_id):
             email = AppEmail(subject, recipient, html, text)
             email.send()
 
-    return home_view(request)
+    return redirect('rep_app:home_page')
 
 @login_required
 def update_note(request, note_id):
@@ -185,7 +185,7 @@ def update_note(request, note_id):
         email = AppEmail(subject, recipient, html, text)
         email.send()
 
-    return reviews_view(request)
+    return redirect('rep_app:reviews')
 
 @login_required
 def nudge_view(request):
@@ -208,7 +208,7 @@ def nudge_view(request):
             email = AppEmail(subject, recipient, html, text)
             email.send()
 
-    return home_view(request)
+    return redirect('home_page')
 
 # User Login Views
 

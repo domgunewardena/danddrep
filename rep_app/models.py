@@ -130,6 +130,13 @@ class Restaurant(models.Model):
         }
 
 
+class Tag(models.Model):
+
+    text = models.CharField(max_length=100)
+
+    def __str__(self):
+        return str(self.text)
+
 class Review(models.Model):
 
     source = models.CharField(max_length=11)
@@ -144,6 +151,7 @@ class Review(models.Model):
     ambience = models.IntegerField(null=True)
     text = models.TextField(max_length=10000, null=True)
     link = models.TextField(max_length=300, null=True)
+    tag = models.ManyToManyField(Tag, null=True)
     comment = models.TextField(max_length=10000, null=True)
     replied = models.BooleanField(default=False)
     reviewed = models.BooleanField(default=False)

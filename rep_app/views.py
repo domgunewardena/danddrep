@@ -9,7 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import send_mail
 
-from rep_app.models import Manager, OpsDirector, Restaurant, Review, Note
+from rep_app.models import Manager, OpsDirector, Restaurant, Review, Note, Tag
 from rep_app.emails import AppEmail, NoteNotification, NudgeNotification, SubmittedNotification, ReviewsNotification
 
 from datetime import date, time, datetime, timedelta

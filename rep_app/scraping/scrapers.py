@@ -15,7 +15,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException, ElementNotInteractableException, StaleElementReferenceException, ElementClickInterceptedException
 
-import rep_app.restaurant_urls as restaurant_urls
+import rep_app.scraping.restaurant_urls as restaurant_urls
 import rep_app.scraping.postgresql as postgresql
 
 class Database():

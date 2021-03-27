@@ -181,6 +181,7 @@ class Command(BaseCommand):
         update_google_database(driver)
         update_tripadvisor_database()
         update_opentable_database(driver)
+        update_sevenrooms_database()
         update_central_database()
         
         return

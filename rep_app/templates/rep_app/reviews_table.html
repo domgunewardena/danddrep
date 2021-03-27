@@ -11,7 +11,15 @@
       {% endfor %}
     </select>
   </div>
-  <div class="table-filter-input-div" style = "width:60%">
+    <div class="table-filter-input-div" style = "width:33%">
+      <select class = "form-select table-filter restaurant-dropdown" id="tagFilter" style = 'height:100%' name='tag' onchange='filterTag(this.value)'>
+        <option value="None">Filter by Tag</option>
+        {% for tag in tags %}
+          <option value="{{tag}}">{{tag.display_text}}</option>
+        {% endfor %}
+      </select>
+    </div>
+  <div class="table-filter-input-div" style = "width:30%">
     <input type="text" class="table-filter" id="reviewFilter" placeholder='Search reviews for keyword'>
   </div>
   <div class="table-filter-input-div" style = "height:100%">
@@ -34,7 +42,8 @@
   <col span="1" style="width: 1%;">
   <col span="1" style="width: 1%;">
   <col span="1" style="width: 38%;">
-  <col span="1" style="width: 38%;">
+  <col span="1" style="width: 15%;">
+  <col span="1" style="width: 23%;">
   <col span="1" style="width: 5%;">
 </colgroup>
 <thead class = 'thead-dark'>
@@ -47,11 +56,12 @@
     <th class='filter-column' onclick="clickFilterColumn(this,5,'number')"><p title='Click to only see reviews with an Ambience Score'>A</p></th>
     <th class='filter-column' onclick="clickFilterColumn(this,6,'number')"><p title='Click to only see reviews with a Value Score'>V</p></th>
     <th class='filter-column' onclick="clickFilterColumn(this,7,'text')"><p title='Click to only see reviews with a written review' style = "text-align:center;">Review</p></th>
+    <th><p style = "text-align:center;">Tags</p></th>
     <th><p style = "text-align:center;">Comment</p></th>
-    {% if not user.manager %}
+    {% if not user.manager or not user.is_staff %}
       <th><p>Submitted</p></th>
     {% else %}
-      <th><p></p></th>
+      <th><p>Submit</p></th>
     {% endif %}
   </tr>
 </thead>
@@ -110,8 +120,8 @@
       {% if review.text %}
         <td title="This is the review that the customer wrote">
           {% if review.text|length > 100 %}
-            <div class="content hideContent"><p>{{review.text}}</p></div>
-            <div class="show-more"><a href="#/" onClick="toggleTextDisplay(this);">Show more</a></div>
+            <div class="content showContent"><p>{{review.text}}</p></div>
+            <!-- <div class="show-more"><a href="#/" onClick="toggleTextDisplay(this);">Show more</a></div> -->
           {% else %}
             <p>{{review.text}}</p>
           {% endif %}
@@ -120,40 +130,100 @@
         <td class='empty'><p title="This customer didn't leave a written review" class = 'empty-text'><i>This customer didn't write a review</i></p></td>
       {% endif %}
 
-      <!-- Display comment form to managers -->
-      {% if user.manager %}
+      <!-- TAGS & COMMENTS -->
+
+      <!-- Display tag form and comment text to staff -->
+
+
+      {% if user.is_staff %}
+        <form action = "{% url 'rep_app:tag_review' review.id %}" method="post">
+          {% csrf_token %}
+          <td>
+            <div class="multiselect">
+              <!-- <div class="selectBox" onclick="showCheckBoxes(this);"> -->
+              <div class="selectBox">
+                <!-- <a style="text-align:center;" href="#/">Show Tags</a> -->
+              </div>
+              <div class="checkboxes show-checkbox">
+                {% for tag in tags %}
+                  <label for="{{tag}} {{review.id}}">
+                    {% if tag in review.tags.all %}
+                      <input type="checkbox" name = "{{tag.display_text}}" id="{{tag}} {{review.id}}" checked/>{{tag}}
+                    {% else %}
+                      <input type="checkbox" name = "{{tag.display_text}}" id="{{tag}} {{review.id}}"/>{{tag}}
+                    {% endif %}
+                  </label><br />
+                {% endfor %}
+              </div>
+            </div>
+          </td>
+
+      <!-- <form action = "{% url 'rep_app:tag_review' review.id %}" method="post">
+          {% csrf_token %}
+          <td>
+            <select name = 'tag' class = "selectpicker" multiple="multiple" data-live-search="true">
+              {% for tag in tags %}
+                <option name = "{{tag.text}}" value="{{tag.text}}" >{{tag.text}}</option>
+              {% endfor %}
+            </select>
+          </td> -->
+
+          <td>
+          {% if review.comment %} <!-- Conditional on whether review has comment -->
+            <p title = 'This is the comment the manager has left'>{{review.comment}}</p>
+          {% else %}
+            <p title = "The manager hasn't left a comment yet" class = 'empty-text'>
+            {% if review.score > 3 %} <!-- Conditional on whether review score is more than 3 -->
+              <i>Managers aren't required to leave comments on reviews with more than 3 ☆s</i>
+            {% else %}
+              <i>The manager hasn't left a comment yet</i>
+            {% endif %} <!-- End conditional on whether review score is more than 3 -->
+            </p>
+          {% endif %} <!-- End conditional on whether review has comment -->
+          </td>
+          <td><input type="submit" name="Submit" value="Add Tags"></td>
+        </form>
+
+      <!-- Display tag text and comment form to managers -->
+      {% elif user.manager %} <!-- If user is manager -->
+        <td>
+          <p>
+            {{review.tag_set}}
+          </p>
+        </td>
         <form action = "{% url 'rep_app:submit_review' review.id %}" method="post">
         {% csrf_token %}
-          {% if review.comment %}
+          {% if review.comment %} <!-- Conditional on whether review has comment -->
             <td><textarea class='text-input' name="comment" required>{{review.comment}}</textarea></td>
           {% else %}
             <td><textarea class='text-input' name="comment" required></textarea></td>
-          {% endif %}
+          {% endif %} <!-- End conditional on whether review has comment -->
         <td><input type="submit" name="Submit" value="Submit"></td>
         </form>
 
       <!-- Display comment text to staff/directors -->
-      {% else %}
+      {% else %} <!-- If user isn't staff or manager -->
         <td>
-        {% if review.comment %}
+          {% for tag in review.tags.all %}
+          <p>
+            • {{tag.display_text}}
+          </p>
+          {% endfor %}
+        </td>
+        <td>
+        {% if review.comment %} <!-- Conditional on whether review has comment -->
           <p title = 'This is the comment the manager has left'>{{review.comment}}</p>
         {% else %}
           <p title = "The manager hasn't left a comment yet" class = 'empty-text'>
-          {% if review.score > 3 %}
+          {% if review.score > 3 %} <!-- Conditional on whether review score is more than 3 -->
             <i>Managers aren't required to leave comments on reviews with more than 3 ☆s</i>
           {% else %}
             <i>The manager hasn't left a comment yet</i>
-          {% endif %}
+          {% endif %} <!-- End conditional on whether review score is more than 3 -->
           </p>
-        {% endif %}
+        {% endif %} <!-- End conditional on whether review has comment -->
         </td>
-        <td>
-        {% if review.reviewed %}
-          <p title = 'The manager has submitted this review' style = "text-align:center">✓</p>
-        {% elif review.score < 4 %}
-          <p title = "The manager hasn't submitted this review yet" style = "text-align:center">✕</p>
-        {% endif %}
-        </td>
+        <td></td>
     {% endif %} <!-- End conditional on user (which determines whether to show comment form (to managers) or comment text (to all other users))  -->
     </tr>
   {% endfor %} <!-- End loop through reviews -->

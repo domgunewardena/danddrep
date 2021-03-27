@@ -55,7 +55,7 @@ function filterRestaurant(restaurantFilter) {
   let tableRows = table.getElementsByTagName('tr');
 
   // Loop through all rows
-  let restaurantTD, restaurantP
+  let restaurantTD, restaurantP;
   for (let i = 1; i < tableRows.length; i++) {
 
     restaurantTD = tableRows[i].getElementsByTagName('td')[1];
@@ -75,6 +75,41 @@ function filterRestaurant(restaurantFilter) {
   }
   console.log('Table filtered by restaurant')
 }
+
+function filterTag(tagFilter) {
+
+  console.log('Filtering table by tag...')
+
+  let table = document.getElementById('reviewsTable');
+  let tableRows = table.getElementsByTagName('tr');
+
+  // Loop through all rows
+  let tagTD, tagP;
+  for (let i = 1; i < tableRows.length; i++) {
+
+    tagTD = tableRows[i].getElementsByTagName('td')[8];
+    tagP = tagTD.getElementsByTagName('p')[0];
+
+    if (tagFilter === 'None') {
+      tableRows[i].classList.remove('unselected-restaurant');
+    }
+    else {
+      if (tagP) {
+        if (tagP.innerHTML.includes(tagFilter)) {
+          tableRows[i].classList.remove('unselected-restaurant');
+        }
+        else {
+          tableRows[i].classList.add('unselected-restaurant');
+        }
+      }
+      else {
+        tableRows[i].classList.add('unselected-restaurant');
+      }
+    }
+  }
+  console.log('Table filtered by tag')
+}
+
 
 function filterReview() {
 
@@ -415,6 +450,24 @@ function toggleTextDisplay(element) {
   return false;
 
 }
+
+function showCheckBoxes(element) {
+
+  let checkbox = element.parentElement.getElementsByClassName('checkboxes')[0];
+  let linkText = element.getElementsByTagName('a')[0].text.toUpperCase();
+
+  if (linkText === 'SHOW TAGS') {
+    linkText = "Hide Tags";
+  } else {
+    linkText = "Show Tags";
+  }
+
+  checkbox.classList.toggle('hide-checkbox')
+  checkbox.classList.toggle('show-checkbox')
+
+}
+
+// $('.selecter').selectpicker();
 
 // document.getElementsByClassName('show-more').on("click", function() {
 //

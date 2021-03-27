@@ -22,28 +22,30 @@
 
 <table class = 'breakdown-table table table-hover' style="width:100%">
   <colgroup>
+    <col span="1" style="width: 15%;">
+    <col span="1" style="width: 4%;">
+    <col span="1" style="width: 4%;">
+    <col span="1" style="width: 4%;">
+    <col span="1" style="width: 4%;">
+    <col span="1" style="width: 4%;">
+    <col span="1" style="width: 4%;">
+    <col span="1" style="width: 4%;">
+    <col span="1" style="width: 4%;">
+    <col span="1" style="width: 33%;">
     <col span="1" style="width: 20%;">
-    <col span="1" style="width: 5%;">
-    <col span="1" style="width: 5%;">
-    <col span="1" style="width: 5%;">
-    <col span="1" style="width: 5%;">
-    <col span="1" style="width: 5%;">
-    <col span="1" style="width: 5%;">
-    <col span="1" style="width: 5%;">
-    <col span="1" style="width: 5%;">
-    <col span="1" style="width: 40%;">
   </colgroup>
   <thead class='thead-dark'>
   <tr>
     <th><p style = "text-align:left;">Restaurant</p></th>
     <th><p>Score</p></th>
     <th><p>Food</p></th>
-    <th><p>Service</p></th>
-    <th><p>Ambience</p></th>
+    <th><p>Serv</p></th>
+    <th><p>Ambi</p></th>
     <th><p>Value</p></th>
     <th><p>Reviews</p></th>
     <th><p><4</p></th>
     <th><p>% <4</p></th>
+    <th><p>Mentions</p></th>
     <th>
     {% if user.is_staff %}
       <p>% Submitted</p>
@@ -83,7 +85,19 @@
           <td class = "table-danger">
         {% endif %}
           <p title = "{{restaurant.get_stats.below_4.reviews_below_4_p}}% of reviews had 3 ★s or less">{{restaurant.get_stats.below_4.reviews_below_4_p}}%</p></td>
-
+        {% with tags=restaurant.get_tags %}
+        <td>
+          <p>
+            {% for tag, count in tags.items %}
+              {% if count > 1 %}
+                - {{tag}} (x{{count}})
+              {% else %}
+                - {{tag}}
+              {% endif %}
+            {% endfor %}
+          </p>
+        </td>
+        {% endwith %}
         <!-- Show submission progress to staff -->
         {% if user.is_staff %}
           <td>

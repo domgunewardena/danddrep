@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 
 from statistics import mean
+from collections import Counter
 from datetime import date, time, datetime, timedelta
 
 def monday(date):
@@ -129,10 +130,24 @@ class Restaurant(models.Model):
             } for category in self.score_categories
         }
 
+    def get_tag_counts(self, reviews):
+
+        tag_lists = [review.get_tag_list() for review in reviews]
+        all_tags = [tag for tag_list in tag_lists for tag in tag_list]
+        tags_counter = Counter(all_tags)
+        tag_counts = {tag:count for tag,count in tags_counter.items()}
+
+        return tag_counts
+
+    def get_tags(self):
+
+        return self.get_tag_counts(self.get_last_week_reviews())
+
 
 class Tag(models.Model):
 
     text = models.CharField(max_length=100)
+    display_text = models.CharField(max_length=100, default='')
 
     def __str__(self):
         return str(self.text)
@@ -141,7 +156,7 @@ class Review(models.Model):
 
     source = models.CharField(max_length=11)
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
-    title = models.CharField(max_length=50, default='')
+    title = models.CharField(max_length=100, default='')
     date = models.DateField()
     visit_date = models.CharField(max_length=20, null=True)
     score = models.IntegerField()
@@ -151,7 +166,7 @@ class Review(models.Model):
     ambience = models.IntegerField(null=True)
     text = models.TextField(max_length=10000, null=True)
     link = models.TextField(max_length=300, null=True)
-    tag = models.ManyToManyField(Tag, null=True)
+    tags = models.ManyToManyField(Tag, null=True)
     comment = models.TextField(max_length=10000, null=True)
     replied = models.BooleanField(default=False)
     reviewed = models.BooleanField(default=False)
@@ -161,6 +176,9 @@ class Review(models.Model):
 
     def get_absolute_url(self):
         return reverse("rep_app:review_detail",kwargs={'pk':self.pk})
+
+    def get_tag_list(self):
+        return [tag.display_text for tag in self.tags.all()]
 
 class Note(models.Model):
 

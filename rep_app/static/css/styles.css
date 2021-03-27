@@ -64,7 +64,7 @@
   vertical-align : middle;
 }
 
-.reviews-table p,a {
+.reviews-table p,a,label {
   font-size: 12px;
   margin:0;
 }
@@ -94,6 +94,14 @@
 .show-more {
     padding: 1px 0;
     text-align: center;
+}
+
+.show-checkbox {
+  display: block;
+}
+
+.hide-checkbox {
+  display: none;
 }
 
 /* Jumbotrons */
@@ -157,6 +165,10 @@ img {
 /* Filter Classes */
 
 .unselected-restaurant {
+  display:none;
+}
+
+.unselected-tag {
   display:none;
 }
 

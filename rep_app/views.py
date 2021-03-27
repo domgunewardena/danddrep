@@ -70,8 +70,13 @@ def filter_reviews_by_submitted(request,reviews):
 def test_view(request):
 
     restaurants = Restaurant.objects.all()
-    # notes = Note.objects.all()
     context = {'restaurants':restaurants}
+
+    # reviews = Review.objects.filter(date__gte=today)
+    # context = {'reviews':reviews}
+
+    # notes = Note.objects.all()
+    # context = {'restaurants':restaurants}
 
     return render(request, 'rep_app/test.html', context)
 
@@ -87,8 +92,13 @@ def home_view(request):
     restaurants = filter_restaurants(request)
     reviews = filter_reviews_by_restaurant(request,reviews)
     reviews = filter_reviews_by_submitted(request,reviews)
+    tags = Tag.objects.all().order_by('text')
 
-    context = {'restaurants':restaurants,'reviews':reviews}
+    context = {
+        'restaurants':restaurants,
+        'reviews':reviews,
+        'tags':tags
+    }
 
     try:
         request.user.manager
@@ -111,8 +121,13 @@ def reviews_view(request):
 
     restaurants = filter_restaurants(request)
     reviews = filter_reviews_by_restaurant(request,reviews)
+    tags = Tag.objects.all().order_by('text')
 
-    context = {'reviews':reviews,'restaurants':restaurants}
+    context = {
+        'reviews':reviews,
+        'restaurants':restaurants,
+        'tags':tags
+    }
 
     return render(request, 'rep_app/reviews.html', context)
 
@@ -124,6 +139,28 @@ def scores_view(request):
     context = {'restaurants':restaurants}
 
     return render(request, 'rep_app/scores.html', context)
+
+@login_required
+def tag_review(request, review_id):
+
+    if request.method == "POST":
+
+        review = get_object_or_404(Review, pk=review_id)
+        tag_objects = Tag.objects.all()
+
+        for tag_object in tag_objects:
+            is_tag = request.POST.get(tag_object.text, False)
+            if is_tag:
+                review.tags.add(tag_object)
+            else:
+                review.tags.remove(tag_object)
+
+        review.save()
+
+
+    return redirect('rep_app:reviews')
+
+
 
 @login_required
 def submit_review(request, review_id):

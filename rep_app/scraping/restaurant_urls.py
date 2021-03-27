@@ -30,7 +30,7 @@ opentable_urls = {
     'Radici':'https://www.opentable.co.uk/r/radici-london',
     'Sartoria':'https://www.opentable.co.uk/sartoria',
     'Skylon':'https://www.opentable.co.uk/r/skylon-london',
-    'South Place Chophouse':'https://www.opentable.co.uk/r/south-place-chop-house-london',
+    'South Place Chop House':'https://www.opentable.co.uk/r/south-place-chop-house-london',
     'German Gymnasium Restaurant':'https://www.opentable.co.uk/german-gymnasium-restaurant',
     'German Gymnasium Cafe':'https://www.opentable.co.uk/german-gymnasium-grand-cafe',
     'Klosterhaus':'https://www.opentable.co.uk/r/klosterhaus-bristol',

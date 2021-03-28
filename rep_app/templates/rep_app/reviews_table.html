@@ -12,7 +12,11 @@
     </select>
   </div>
     <div class="table-filter-input-div" style = "width:33%">
-      <select class = "form-select table-filter restaurant-dropdown" id="tagFilter" style = 'height:100%' name='tag' onchange='filterTag(this.value)'>
+      {% if user.is_staff %}
+        <select class = "form-select table-filter restaurant-dropdown" id="tagFilter" style = 'height:100%' name='tag' onchange='filterTagForm(this.value)'>
+      {% else %}
+        <select class = "form-select table-filter restaurant-dropdown" id="tagFilter" style = 'height:100%' name='tag' onchange='filterTag(this.value)'>
+      {% endif %}
         <option value="None">Filter by Tag</option>
         {% for tag in tags %}
           <option value="{{tag}}">{{tag.display_text}}</option>

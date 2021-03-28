@@ -110,6 +110,38 @@ function filterTag(tagFilter) {
   console.log('Table filtered by tag')
 }
 
+function filterTagForm(tagFilter) {
+
+  console.log('Filtering table by tag...')
+
+  let table = document.getElementById('reviewsTable');
+  let tableRows = table.getElementsByTagName('tr');
+  let tagInputs;
+  
+  // Loop through all rows
+  for (let i = 1; i < tableRows.length; i++) {
+
+    if (tagFilter === 'None') {
+      tableRows[i].classList.remove('unselected-restaurant');
+    }
+
+    else {
+      tagInputs = tableRows[i].getElementsByTagName('input');
+      for (let j = 1; j < tagInputs.length; j++) {
+        if (tagInputs[j].name === tagFilter) {
+          if (tagInputs[j].checked) {
+            tableRows[i].classList.remove('unselected-restaurant');
+          }
+          else {
+            tableRows[i].classList.add('unselected-restaurant');
+          }
+        }
+      }
+    }
+  }
+  console.log('Table filtered by tag')
+}
+
 
 function filterReview() {
 

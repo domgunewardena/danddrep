@@ -20,16 +20,17 @@
   <!-- Table -->
   <table id = 'breakdownTable' class = 'breakdown-table note-table table table-hover' style="width:100%">
     <colgroup>
-      <col span="1" style="width: 20%;">
-      <col span="1" style="width: 5%;">
-      <col span="1" style="width: 5%;">
-      <col span="1" style="width: 5%;">
-      <col span="1" style="width: 5%;">
-      <col span="1" style="width: 5%;">
-      <col span="1" style="width: 5%;">
-      <col span="1" style="width: 5%;">
-      <col span="1" style="width: 5%;">
-      <col span="1" style="width: 35%;">
+      <col span="1" style="width: 15%;">
+      <col span="1" style="width: 4%;">
+      <col span="1" style="width: 4%;">
+      <col span="1" style="width: 4%;">
+      <col span="1" style="width: 4%;">
+      <col span="1" style="width: 4%;">
+      <col span="1" style="width: 4%;">
+      <col span="1" style="width: 4%;">
+      <col span="1" style="width: 4%;">
+      <col span="1" style="width: 30%;">
+      <col span="1" style="width: 18%;">
       <col span="1" style="width: 5%;">
     </colgroup>
     <thead class = "thead-dark">
@@ -43,6 +44,7 @@
         <th><p>Reviews</p></th>
         <th><p><4</p></th>
         <th><p>% <4</p></th>
+        <th><p>Mentions</p></th>
         <th><p>Notes</p></th>
         <th><p></p></th>
       </tr>
@@ -91,7 +93,19 @@
               {{stats.below_4.reviews_below_4_p}}%
             </p>
           </td>
-
+          {% with tags=restaurant.get_tags %}
+            <td>
+              <p>
+                {% for tag, count in tags.items %}
+                  {% if count > 1 %}
+                    - {{tag}} (x{{count}})
+                  {% else %}
+                    - {{tag}}
+                  {% endif %}
+                {% endfor %}
+              </p>
+            </td>
+          {% endwith %}
           <!-- Notes Input -->
           <form action = "{% url 'rep_app:update_note' restaurant.note.id %}" method="post">
             {% csrf_token %}

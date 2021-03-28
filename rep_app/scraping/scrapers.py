@@ -541,6 +541,10 @@ class Tripadvisor(Database):
         review_urls = []
         
         if self.method == 'all':
+            
+            self.final_page = self.get_final_page(self.home_soup)
+            self.home_urls = self.get_home_url_list(self.home_url, self.final_page)
+            
             for home_url in self.home_urls:
                 soup = self.get_soup(home_url)
                 self.add_review_urls_to_master_list(soup, review_urls)
@@ -1032,6 +1036,16 @@ class Opentable(Database):
         self.new_reviews = self.get_new_reviews()
         if self.new_reviews:
             self.add_reviews_to_database(self.new_reviews)
+        
+        print(self.name + "'s Opentable scraping finished.")
+        
+        
+    def create_database(self):
+        
+        print(self.name + "'s Opentable scraping started...")
+        
+        self.all_reviews = self.get_all_reviews()
+        self.add_reviews_to_database(self.all_reviews)
         
         print(self.name + "'s Opentable scraping finished.")
         

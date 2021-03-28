@@ -168,6 +168,8 @@ function filterReview() {
 
 }
 
+// Filter review table by review text on pressing enter key
+
 let enterInput = document.getElementById('reviewFilter');
 enterInput.addEventListener('keyup', function(event) {
   if (event.keyCode === 13) {
@@ -250,7 +252,7 @@ function filterBreakdown() {
 }
 
 
-// Column Filtering
+// Score Filtering
 
 function hideFilteredRows() {
 
@@ -305,7 +307,70 @@ function unfilterColumn(columnIndex) {
 
 }
 
+// sorting
+
+function getValue(row, columnIndex, dataType) {
+  let value = row.getElementsByTagName("td")[columnIndex].innerText;
+  if (value === '-') {value = '6';}
+  if (dataType === 'text') {value = value.toLowerCase();}
+  else if (dataType === 'number') {value = Number(value1);}
+  return value
+}
+
+function swap(rows, leftIndex, rightIndex) {
+  let temp = rows[leftIndex];
+  rows[leftIndex] = rows[rightIndex];
+  rows[rightIndex] = rows[leftIndex];
+}
+
+function partition(rows, left, right, columnIndex, dataType) {
+  let pivot = Math.floor((right + left) / 2)
+  let i = left;
+  let j = right;
+
+  let pivotValue = getValue(rows[pivot], columnIndex, dataType);
+  let iValue = getValue(rows[i], columnIndex, dataType);
+  let jValue = getValue(rows[j], columnIndex, dataType);
+
+  while (i <= j) {
+    while (iValue < pivotValue) {
+      i++;
+      iValue = getValue(rows[i], columnIndex, dataType);
+    }
+    while (jValue > pivotValue) {
+      j--;
+      jValue = getValue(rows[j], columnIndex, dataType);
+    }
+    if (i <= j) {
+      swap(rows, i, j);
+      i++;
+      iValue = getValue(rows[i], columnIndex, dataType);
+      j++;
+      jValue = getValue(rows[j], columnIndex, dataType);
+    }
+  }
+  return i;
+}
+
+function quickSort(rows, left, right, columnIndex, dataType) {
+  let index;
+  if (rows.length > 1) {
+    index = partition(rows, left, right, columnIndex, dataType);
+    if (left < index - 1) {
+      quickSort(rows, left, index - 1, columnIndex, dataType);
+    }
+    if (index < right) {
+      quickSort(rows, right, index, columnIndex, dataType);
+    }
+  }
+}
+
 function sortColumn(columnIndex, dataType) {
+  let rows = document.getElementById("reviewsTable").rows;
+  quickSort(rows, 0, rows.length, columnIndex, dataType);
+}
+
+function sortColumnOld(columnIndex, dataType) {
 
   console.log('Starting column sort...')
 
@@ -363,12 +428,12 @@ function clickFilterColumn(thElement, columnIndex, dataType) {
     filterColumn(columnIndex);
   }
   else {
-    thElement.style.backgroundColor = '#343a40';
+    thElement.style.backgroundColor = 'black';
     unfilterColumn(columnIndex);
   }
 }
 
-
+// Filter review table by category from clicking categoy score in breakdown jumbotron
 function filterStat(restaurant, category) {
 
   let categoriesDict = {
@@ -403,6 +468,7 @@ function filterStat(restaurant, category) {
 
 }
 
+// Change displayed scores in scores table when clicking on category
 function changeScoreCategory(clickedButton) {
 
   let categoryButtons = document.getElementsByClassName('category-button');

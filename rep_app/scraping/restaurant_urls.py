@@ -34,7 +34,7 @@ opentable_urls = {
     'German Gymnasium Restaurant':'https://www.opentable.co.uk/german-gymnasium-restaurant',
     'German Gymnasium Cafe':'https://www.opentable.co.uk/german-gymnasium-grand-cafe',
     'Klosterhaus':'https://www.opentable.co.uk/r/klosterhaus-bristol',
-
+    'The Modern Pantry':'https://www.opentable.co.uk/the-modern-pantry-clerkenwell',
 }
 
 tripadvisor_urls = {
@@ -67,6 +67,9 @@ tripadvisor_urls = {
     'Angelica':'https://www.tripadvisor.co.uk/Restaurant_Review-g186411-d4011007-Reviews-Angelica-Leeds_West_Yorkshire_England.html',
     'Crafthouse':'https://www.tripadvisor.co.uk/Restaurant_Review-g186411-d4011011-Reviews-Crafthouse-Leeds_West_Yorkshire_England.html',
     'German Gymnasium':'https://www.tripadvisor.co.uk/Restaurant_Review-g186338-d8803043-Reviews-German_Gymnasium-London_England.html',
+    'Angler':'https://www.tripadvisor.co.uk/Restaurant_Review-g186338-d3534237-Reviews-Angler-London_England.html',
+    'South Place Chop House':'https://www.tripadvisor.co.uk/Restaurant_Review-g186338-d3358142-Reviews-South_Place_Chop_House-London_England.html',
+    'The Modern Pantry':'https://www.tripadvisor.co.uk/Restaurant_Review-g186338-d1212005-Reviews-The_Modern_Pantry-London_England.html'
 }
 
 google_urls = {

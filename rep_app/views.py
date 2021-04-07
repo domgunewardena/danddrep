@@ -216,7 +216,8 @@ def update_note(request, note_id):
             restaurant = note.restaurant.name
 
             subject = restaurant + ' has a new note'
-            recipient = 'domgunewardena@gmail.com'
+            # recipient = 'domgunewardena@gmail.com'
+            recipient = 'annabels@danddlondon.com'
             email_text = NoteNotification(restaurant, manager, note.text, app_url)
             html = email_text.html
             text = email_text.text
@@ -239,7 +240,8 @@ def nudge_view(request):
             manager = restaurant.manager.user.first_name
 
             subject = 'Annabel has nudged you'
-            recipient = 'domgunewardena@gmail.com'
+            # recipient = 'domgunewardena@gmail.com'
+            recipient = 'annabels@danddlondon.com'
             email_text = NudgeNotification(restaurant_name, manager, app_url)
             html = email_text.html
             text = email_text.text

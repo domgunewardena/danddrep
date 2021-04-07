@@ -1266,11 +1266,11 @@ class Reviews(Database):
         
         df = map_restaurants(
             rename_columns(
-                add_date(
+#                 add_date(
                     add_source(
                         current_df
                     )
-                )
+#                 )
             )
         )
         

@@ -107,7 +107,7 @@
             </td>
           {% endwith %}
           <!-- Notes Input -->
-          <form action = "{% url 'rep_app:update_note' restaurant.note.id %}" method="post">
+          <form target='_blank' action = "{% url 'rep_app:update_note' restaurant.note.id %}" method="post">
             {% csrf_token %}
             {% if restaurant.note.text %} <!-- Conditional on whether note has any text -->
               <td>

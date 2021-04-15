@@ -83,6 +83,22 @@ class Database():
         conn.close()
         
         return pd.DataFrame(tuples, columns=self.column_names)
+       
+        
+    def table_to_dataframe(self,table):
+        
+        select_query = 'SELECT * FROM ' + table
+        columns = postgresql.tables['columns'][table]
+        
+        conn = self.connect_to_database()
+        cur = conn.cursor()
+        
+        cur.execute(select_query)
+        tuples = cur.fetchall()
+        cur.close()
+        conn.close()
+        
+        return pd.DataFrame(tuples, columns=columns)
     
     def upload_to_database(self, dataframe):
         
@@ -1213,22 +1229,6 @@ class Reviews(Database):
     def __init__(self):
         
         super().__init__('reviews')
-       
-        
-    def table_to_dataframe(self,table):
-        
-        select_query = 'SELECT * FROM ' + table
-        columns = postgresql.tables['columns'][table]
-        
-        conn = self.connect_to_database()
-        cur = conn.cursor()
-        
-        cur.execute(select_query)
-        tuples = cur.fetchall()
-        cur.close()
-        conn.close()
-        
-        return pd.DataFrame(tuples, columns=columns)
     
     
     def get_tripadvisor_reviews(self):
@@ -1438,6 +1438,41 @@ class Reviews(Database):
         )
         
         new_reviews_df = df[df['_merge']=='left_only'][self.columns]
+        
+        return new_reviews_df.to_dict('records')
+    
+    
+    def update_database(self):
+        
+        self.new_reviews = self.get_new_reviews()
+        if self.new_reviews:
+            self.add_reviews_to_database(self.new_reviews)
+            
+            
+class Scores(Database):
+    
+    def __init__(self):
+        
+        super().__init__('scores')
+        
+        
+    def get_new_database(self):
+        
+        return self.table_to_dataframe('reviews')[self.column_names]
+    
+    
+    def get_new_reviews(self):
+        
+        self.new_database = self.get_new_database()
+        
+        df = pd.merge(
+            left = self.new_database,
+            right = self.database,
+            how = 'left',
+            indicator = True
+        )
+        
+        new_reviews_df = df[df['_merge']=='left_only'][self.column_names]
         
         return new_reviews_df.to_dict('records')
     

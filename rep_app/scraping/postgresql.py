@@ -69,6 +69,17 @@ tables = {
                 link TEXT
             );
         """
+        'scores':"""
+            CREATE TABLE scores (
+                restaurant VARCHAR(25),
+                date VARCHAR(10),
+                score INTEGER,
+                food INTEGER,
+                service INTEGER,
+                value INTEGER,
+                ambience INTEGER,
+            );
+        """
     },
     'columns': {
         'google':[
@@ -135,7 +146,16 @@ tables = {
             'ambience',
             'review',
             'link',
-        ]
+        ],
+        'scores': [
+            'restaurant',
+            'date',
+            'score',
+            'food',
+            'service',
+            'value',
+            'ambience',
+        ],
     },
     'null_columns': {
         'google': 'comment',

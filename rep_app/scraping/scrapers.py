@@ -100,6 +100,22 @@ class Database():
 
         con.close()
         
+    def upload_to_other_database(self, table, dataframe):
+        
+        engine_string = 'postgresql://' + self.postgres_user + ':' + self.postgres_password + '@' + self.postgres_host + '/' + self.postgres_database
+
+        engine = create_engine(engine_string)
+        con = engine.connect()
+
+        dataframe.to_sql(
+            table,
+            con=con,
+            index=False,
+            if_exists='replace'
+        )
+
+        con.close()
+        
     def add_reviews_to_database(self, new_reviews):
         
 #         import math

@@ -1205,7 +1205,6 @@ class SevenRooms(Database):
                     
                     review['link'] = reservation_url
                     review['restaurant'] = restaurant
-                    review['restaurant_id'] = venue_id
                     review = numericize_scores(review)
                     
                     reviews.append(review)

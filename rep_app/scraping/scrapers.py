@@ -1392,32 +1392,38 @@ class Reviews(Database):
         
     def get_new_database(self):
         
+        print('Creating Tripadvisor reviews df')
         self.tripadvisor_df = self.get_tripadvisor_reviews()
+        print('Creating Opentable reviews df')
         self.opentable_df = self.get_opentable_reviews()
+        print('Creating Google reviews df')
         self.google_df = self.get_google_reviews()
+        print('Creating SevenRooms reviews df')
         self.sevenrooms_df = self.get_sevenrooms_reviews()
         self.columns = postgresql.tables['columns']['reviews']
         
+        print('Merging TA & OT reviews')
         tripadvisor_opentable = pd.merge(
             left = self.tripadvisor_df,
             right = self.opentable_df,
             how = 'outer'
         )
-        
+        print('Merging TAOT & GO reviews')
         tripadvisor_opentable_google_df = pd.merge(
             left = tripadvisor_opentable,
             right = self.google_df,
             how = 'outer'
         )
         
+        print('Merging TAOTGO & SR reviews')
         all_df = pd.merge(
             left = tripadvisor_opentable_google_df,
             right = self.sevenrooms_df,
             how = 'outer'
         )
         
+        print('Filtering reviews df by columns')
         df = all_df[self.columns]
-        
         df['date'] = pd.to_datetime(df['date'])
         df['visit_date'] = df['visit_date'].apply(str)
         df['review'] = df['review'].fillna('')
@@ -1431,8 +1437,10 @@ class Reviews(Database):
     
     def get_new_reviews(self):
         
+        print('Getting new database...')
         self.new_database = self.get_new_database()
         
+        print('Merging new and old databases')
         df = pd.merge(
             left = self.new_database,
             right = self.database,
@@ -1440,6 +1448,7 @@ class Reviews(Database):
             indicator = True
         )
         
+        print('Filtering merged databases by just new reviews')
         new_reviews_df = df[df['_merge']=='left_only'][self.columns]
         
         return new_reviews_df.to_dict('records')

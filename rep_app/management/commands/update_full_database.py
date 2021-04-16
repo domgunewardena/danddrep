@@ -33,9 +33,12 @@ class Command(BaseCommand):
             
             for new_review in new_reviews:
                 
+                print('Getting restaurant_id...')
                 restaurant_id = get_restaurant_id(new_review['restaurant'])
                 
                 if restaurant_id:
+                    
+                    print("Valid restaurant_id")
                 
                     new_review_object = Review(
                         source = new_review['source'],

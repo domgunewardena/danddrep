@@ -70,25 +70,9 @@ class Database():
         
     def create(self):
         
-        self.execute_query(self.create_query, True)
+        self.execute_query(self.create_query, True)   
         
-    def to_dataframe(self):
-        
-        conn = self.connect_to_database()
-        cur = conn.cursor()
-        
-        cur.execute(self.select_query)
-        tuples = cur.fetchall()
-        cur.close()
-        conn.close()
-        
-        return pd.DataFrame(tuples, columns=self.column_names)
-       
-        
-    def table_to_dataframe(self,table):
-        
-        select_query = 'SELECT * FROM ' + table
-        columns = postgresql.tables['columns'][table]
+    def select_query_to_dataframe(self, select_query, columns):
         
         conn = self.connect_to_database()
         cur = conn.cursor()
@@ -99,6 +83,20 @@ class Database():
         conn.close()
         
         return pd.DataFrame(tuples, columns=columns)
+        
+    def to_dataframe(self):
+        
+        query = self.select_query
+        columns = self.column_names
+        
+        return self.select_query_to_dataframe(query, columns) 
+        
+    def table_to_dataframe(self,table):
+        
+        query = 'SELECT * FROM ' + table
+        columns = self.column_names
+        
+        return self.select_query_to_dataframe(query, columns) 
     
     def upload_to_database(self, dataframe):
         

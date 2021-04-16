@@ -1266,7 +1266,7 @@ class Reviews(Database):
         
         def add_date(df):
             
-            df['date'] = df['dined_date']
+            df['date'] = pd.to_datetime(df['date'], dayfirst=True).dt.strftime("%d %B %Y") 
             return df
         
         def rename_columns(df):
@@ -1285,11 +1285,11 @@ class Reviews(Database):
         
         df = map_restaurants(
             rename_columns(
-#                 add_date(
+                add_date(
                     add_source(
                         current_df
                     )
-#                 )
+                )
             )
         )
         

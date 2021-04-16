@@ -55,11 +55,11 @@ class Database():
         cur.close()
         conn.close()
         
-    def execute_query_with_value(self, query, value, commit_boolean):
+    def execute_query_with_dic(self, query, dic, commit_boolean):
         
         conn = self.connect_to_database()
         cur = conn.cursor()
-        cur.execute(query, value)
+        cur.execute(query, dic)
         
         if commit_boolean:
             conn.commit()
@@ -145,7 +145,7 @@ class Database():
             values = ', '.join(['%({})s'.format(k) for k in keys])
             insert_query = 'INSERT INTO {0} ({1}) VALUES ({2});'.format(table, columns, values)
             
-            self.execute_query_with_value(insert_query, review, True)
+            self.execute_query_with_dic(insert_query, review, True)
         
 
 class Google(Database):
@@ -390,12 +390,18 @@ class Google(Database):
 
             review['location'] = location_name
             review['reviewer_display_name'] = review['reviewer']['displayName']
+            
             try:
                 review_link = self.get_review_link(review, location_dict, location_soup)
             except IndexError:
                 review['link'] = restaurant_urls.google_review_urls[location_name]
             else:
                 review['link'] = review_link
+                
+            try:
+                del(review['reviewReply'])
+            except:
+                pass
             
             del(review['reviewer'])
             for key, value in postgresql.tables['rename_columns'][self.table].items():

@@ -68,7 +68,7 @@ tables = {
                 review TEXT,
                 link TEXT
             );
-        """
+        """,
         'scores':"""
             CREATE TABLE scores (
                 restaurant VARCHAR(25),

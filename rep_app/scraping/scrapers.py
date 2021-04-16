@@ -94,7 +94,7 @@ class Database():
     def table_to_dataframe(self,table):
         
         query = 'SELECT * FROM ' + table
-        columns = self.column_names
+        columns = postgresql.tables['columns'][table]
         
         return self.select_query_to_dataframe(query, columns) 
     

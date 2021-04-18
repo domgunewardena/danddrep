@@ -164,7 +164,7 @@ class Command(BaseCommand):
 
                         new_review_object.save()
 
-                        self.stdout.write(self.style.SUCCESS('Review successfully created'))
+                        self.stdout.write(self.style.SUCCESS(new_review['source'] + ' review successfully created'))
 
                 print('Updating database')
                 reviews.update_database()

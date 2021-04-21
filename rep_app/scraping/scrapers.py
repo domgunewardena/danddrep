@@ -1021,7 +1021,7 @@ class Opentable(Database):
             'date': yesterday,
             'dined_date': dined_date,
             'review_text': review_text,
-            'id': self.name + '_' + name + '_' + dined_date,
+            'id': self.name + '_' + name + '_' + review_text,
             'link':self.home_url
         }
 

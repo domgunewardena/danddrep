@@ -976,8 +976,15 @@ class Opentable(Database):
             return date_span
 
         def get_date(date_span):
-
-            date = date_span.text.replace('Dined on ', '')
+            
+            text = date_span.text
+            
+            if 'days ago' in text:
+                days_ago = int(text.replace('Dined ','').replace(' days ago',''))
+                date = (date.today()-timedelta(days_ago)).strftime('%d-%b-%y')
+            else:
+                date = text.replace('Dined on ', '')
+                
             return date
 
         date_span = get_date_span(review_container)

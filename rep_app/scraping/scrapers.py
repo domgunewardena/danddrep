@@ -981,14 +981,14 @@ class Opentable(Database):
             
             if 'days ago' in text:
                 days_ago = int(text.replace('Dined ','').replace(' days ago',''))
-                date = (date.today()-timedelta(days_ago)).strftime('%d-%b-%y')
+                dined_date = (date.today()-timedelta(days_ago)).strftime('%d %B %Y')
             else:
-                date = text.replace('Dined on ', '')
+                dined_date = text.replace('Dined on ', '')
                 
-            return date
+            return dined_date
 
         date_span = get_date_span(review_container)
-        date = get_date(date_span)
+        dined_date = get_date(date_span)
 
         return date
 

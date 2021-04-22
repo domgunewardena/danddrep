@@ -208,7 +208,7 @@ tables = {
                 'Radici': 'Radici',
                 'Sartoria': 'Sartoria',
                 'Skylon': 'Skylon',
-                'South Place Chophouse': 'South Place Chophouse',
+                'South Place Chop House': 'South Place Chop House',
                 'The Modern Pantry': 'The Modern Pantry',
             },
             'google':{

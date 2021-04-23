@@ -17,7 +17,6 @@ from datetime import date, time, datetime, timedelta
 # Date Variables
 
 today = date.today()
-today = date.today()-timedelta(365)
 monday_this = today - timedelta(today.weekday())
 monday_last = monday_this - timedelta(7)
 

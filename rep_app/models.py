@@ -18,7 +18,7 @@ def months_ago(date, n):
 def one_year_ago(date):
     return date - timedelta(364)
 
-today = one_year_ago(date.today())
+today = date.today()
 monday_this = monday(today)
 monday_last = weeks_ago(monday_this, 1)
 monday_last_month = months_ago(monday_this, 1)

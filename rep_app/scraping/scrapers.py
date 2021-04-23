@@ -1017,8 +1017,10 @@ class Opentable(Database):
         yesterday_string = yesterday.strftime('%Y-%m-%d')
         
         name = self.get_name(review_container)
+        print('Name: ' + name)
         overall,food,service,ambience = self.get_scores(review_container)
         dined_date = self.get_dined_date(review_container)
+        print('Dined date: ' + dined_date)
         review_text = self.get_review_text(review_container)
 
         review_dict = {
@@ -1072,10 +1074,13 @@ class Opentable(Database):
         reviews = []
         review_containers = self.get_review_containers(self.open_home_soup)  
         
-        for review_container in review_containers:                
-            review_dict = self.get_review_dict(review_container)
-            if review_dict['id'] not in self.current_ids:
-                reviews.append(review_dict)
+        for review_container in review_containers:
+            try:
+                review_dict = self.get_review_dict(review_container)
+                if review_dict['id'] not in self.current_ids:
+                    reviews.append(review_dict)
+            except:
+                print('ERROR WHEN RETRIEVING REVIEW DICT')
             
         return reviews
     

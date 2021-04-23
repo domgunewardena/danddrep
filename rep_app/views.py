@@ -157,7 +157,7 @@ def tag_review(request, review_id):
         review.save()
 
 
-    return redirect('rep_app:reviews')
+    return redirect('rep_app:home_page')
 
 
 

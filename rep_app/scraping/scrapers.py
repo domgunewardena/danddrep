@@ -996,7 +996,7 @@ class Opentable(Database):
         date_span = get_date_span(review_container)
         dined_date = get_date(date_span)
 
-        return date
+        return dined_date
 
     def get_review_text(self,review_container):
         
@@ -1020,7 +1020,6 @@ class Opentable(Database):
         print('Name: ' + name)
         overall,food,service,ambience = self.get_scores(review_container)
         dined_date = self.get_dined_date(review_container)
-        print('Dined date: ' + dined_date)
         review_text = self.get_review_text(review_container)
 
         review_dict = {

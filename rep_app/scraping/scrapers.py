@@ -1080,7 +1080,7 @@ class Opentable(Database):
                 if review_dict['id'] not in self.current_ids:
                     reviews.append(review_dict)
             except Exception as err:
-                print('ERROR WHEN RETRIEVING REVIEW DICT: ' + str(err)
+                print('ERROR WHEN RETRIEVING REVIEW DICT: ' + str(err))
             
         return reviews
     

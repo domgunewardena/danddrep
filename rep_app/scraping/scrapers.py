@@ -916,8 +916,6 @@ class Opentable(Database):
         
         
     def get_review_containers(self, soup):
-        
-        print('Getting review containers...')
 
         review_container_class = '.reviewListItem'
         review_containers = soup.select(review_container_class)
@@ -929,8 +927,6 @@ class Opentable(Database):
 #   INNER FUNCTIONS
     
     def get_name(self,review_container):
-        
-        print('Getting name...')
 
         name_div_class = '.oc-reviews-954a6007'
         name_div = review_container.select(name_div_class)
@@ -939,8 +935,6 @@ class Opentable(Database):
         return name                
 
     def get_scores(self,review_container):
-        
-        print('Getting scores...')
 
         def get_scores_div(review_container):
 
@@ -971,8 +965,6 @@ class Opentable(Database):
         return overall_score, food_score, service_score, ambience_score
 
     def get_dined_date(self,review_container):
-        
-        print('Getting dined date...')
 
         def get_date_span(review_container):
 
@@ -999,8 +991,6 @@ class Opentable(Database):
         return dined_date
 
     def get_review_text(self,review_container):
-        
-        print('Getting review text...')
 
         review_div_class = '.reviewBodyContainer'
         review_text = review_container.select(review_div_class)[0].text
@@ -1011,13 +1001,10 @@ class Opentable(Database):
     
     def get_review_dict(self, review_container):
         
-        print('Getting review dict...')
-        
         yesterday = date.today()-timedelta(1)
         yesterday_string = yesterday.strftime('%Y-%m-%d')
         
         name = self.get_name(review_container)
-        print('Name: ' + name)
         overall,food,service,ambience = self.get_scores(review_container)
         dined_date = self.get_dined_date(review_container)
         review_text = self.get_review_text(review_container)

@@ -170,7 +170,7 @@ class Review(models.Model):
     comment = models.TextField(max_length=10000, null=True)
     replied = models.BooleanField(default=False)
     reviewed = models.BooleanField(default=False)
-    # tagged = models.BooleanField(default=False, null=True)
+    tagged = models.BooleanField(default=False, null=True)
 
     def __str__(self):
         return str(self.title)

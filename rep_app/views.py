@@ -85,13 +85,16 @@ def home_view(request):
     reviews = Review.objects.filter(
         date__lt = monday_this,
         date__gte = monday_last,
-        score__lt = 4
+        score__lt = 4,
+        tagged = False,
     ).order_by('score', 'restaurant')
 
     restaurants = filter_restaurants(request)
     reviews = filter_reviews_by_restaurant(request,reviews)
     reviews = filter_reviews_by_submitted(request,reviews)
     tags = Tag.objects.all().order_by('text')
+
+    reviews = reviews[:100]
 
     context = {
         'restaurants':restaurants,

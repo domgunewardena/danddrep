@@ -157,11 +157,13 @@ def tag_review(request, review_id):
             else:
                 review.tags.remove(tag_object)
 
+        review.tagged = True
         review.save()
 
-    return redirect('rep_app:home_page')
+    return redirect('rep_app:review_detail', pk=review_id)
 
-
+class ReviewDetailView(DetailView):
+    model = Review
 
 @login_required
 def submit_review(request, review_id):

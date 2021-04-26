@@ -65,7 +65,7 @@ def filter_reviews_by_submitted(request,reviews):
 
 def filter_reviews_by_text(reviews):
 
-    return reviews.filter(text != '')
+    return reviews.exclude(text = '')
 
 
 # Create your views here.

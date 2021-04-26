@@ -63,6 +63,10 @@ def filter_reviews_by_submitted(request,reviews):
 
     return reviews
 
+def filter_reviews_by_text(reviews):
+
+    return reviews.filter(text != '')
+
 
 # Create your views here.
 
@@ -92,6 +96,7 @@ def home_view(request):
     restaurants = filter_restaurants(request)
     reviews = filter_reviews_by_restaurant(request,reviews)
     reviews = filter_reviews_by_submitted(request,reviews)
+    reviews = filter_reviews_by_text(reviews)
     tags = Tag.objects.all().order_by('text')
 
     reviews = reviews[:100]

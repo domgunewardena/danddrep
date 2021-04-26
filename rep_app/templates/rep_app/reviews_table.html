@@ -152,9 +152,9 @@
                 {% for tag in tags %}
                   <label for="{{tag}} {{review.id}}">
                     {% if tag in review.tags.all %}
-                      <input type="checkbox" name = "{{tag.display_text}}" id="{{tag}} {{review.id}}" checked/>{{tag}}
+                      <input type="checkbox" name = "{{tag.text}}" id="{{tag}} {{review.id}}" checked/>{{tag.display_text}}
                     {% else %}
-                      <input type="checkbox" name = "{{tag.display_text}}" id="{{tag}} {{review.id}}"/>{{tag}}
+                      <input type="checkbox" name = "{{tag.text}}" id="{{tag}} {{review.id}}"/>{{tag.display_text}}
                     {% endif %}
                   </label><br />
                 {% endfor %}

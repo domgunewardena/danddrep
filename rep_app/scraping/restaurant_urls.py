@@ -160,6 +160,7 @@ sevenrooms_url_restaurant_ids = {
     'Klosterhaus': 'klosterhauslondon',
     'Launceston Place': 'launcestonplace',
     'Madison Restaurant': 'madisonrestaurant',
+    'Madison Restaurant and Bar': 'madisonrestaurant',
     'New Street Grill': 'newstreetgrill',
     'New Street Wine Shop': 'newstreetwineshop',
     'Old Bengal Bar': 'oldbengalbar',

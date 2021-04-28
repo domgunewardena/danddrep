@@ -282,6 +282,7 @@ tables = {
                 'Klosterhaus': 'Klosterhaus',
                 'Launceston Place': 'Launceston Place',
                 'Madison Restaurant': 'Madison',
+                'Madison Restaurant and Bar': 'Madison',
                 'New Street Grill': 'New Street Grill',
                 'Orrery': 'Orrery',
                 'Paternoster Chophouse': 'Paternoster Chophouse',

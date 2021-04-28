@@ -33,12 +33,9 @@ class Command(BaseCommand):
             
             for new_review in new_reviews:
                 
-                print('Getting restaurant_id...')
                 restaurant_id = get_restaurant_id(new_review['restaurant'])
                 
                 if restaurant_id:
-                    
-                    print("Valid restaurant_id")
                 
                     new_review_object = Review(
                         source = new_review['source'],
@@ -57,7 +54,7 @@ class Command(BaseCommand):
 
                     new_review_object.save()
 
-                    self.stdout.write(self.style.SUCCESS('Review successfully created'))
+                    self.stdout.write(self.style.SUCCESS(new_review['source'] + ' Review successfully created'))
                     
             print('Updating database')
             reviews.update_database()

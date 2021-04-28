@@ -126,6 +126,13 @@ class Command(BaseCommand):
                 
         def update_central_database():
             
+            review_counts = {
+                'Google':0,
+                'Tripadvisor':0,
+                'Opentable':0,
+                'SevenRooms':0
+            }
+            
             def get_restaurant_id(restaurant_string):
 
                 try:
@@ -165,6 +172,8 @@ class Command(BaseCommand):
                         new_review_object.save()
 
                         self.stdout.write(self.style.SUCCESS(new_review['source'] + ' review successfully created'))
+                        
+                        review_counts[new_review['source']] += 1
 
                 print('Updating database')
                 reviews.update_database()
@@ -175,7 +184,11 @@ class Command(BaseCommand):
                 
             else:
                 
-                self.stdout.write(self.style.SUCCESS('Central database successfully updated'))
+                self.stdout.write(
+                    self.style.SUCCESS(
+                        'Central database successfully updated. Google:' + str(review_counts['Google']) + ' Tripadvisor:' + str(review_counts['Tripadvisor']) + ' Opentable:' + str(review_counts['Opentable']) + ' SevenRooms:' + str(review_counts['SevenRooms'])
+                    )
+                )
                 
         driver = open_driver()
         update_google_database(driver)

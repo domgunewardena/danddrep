@@ -87,8 +87,7 @@ def test_view(request):
 def home_view(request):
 
     reviews = Review.objects.filter(
-        date__lt = monday_this,
-        date__gte = monday_last,
+        date__gte = monday_this,
         score__lt = 4,
         tagged = False,
     ).order_by('score', 'restaurant')

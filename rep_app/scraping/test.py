@@ -1,14 +1,17 @@
 import unittest
 import test_results
 
-from scrapers import Google, Tripadvisor, Opentable, SevenRooms, Reviews
-from selenium.webdriver import Chrome
+from scrapers.google import Google
+from scrapers.tripadvisor import Tripadvisor
+from scrapers.opentable import Opentable
+from scrapers.sevenrooms import SevenRooms
+from scrapers.reviews import Reviews
 
-driver = Chrome('./chromedriver')
+from selenium.webdriver import Chrome
 
 class TestGoogle(unittest.TestCase):
     
-    google = Google('new', driver)
+    google = Google('new')
     bluebird_location_dict = test_results.google_location_dicts[0]
     bluebird_reviews_url = 'https://mybusiness.googleapis.com/v4/accounts/111855729671132001333/locations/8494375825452078058/reviews'
     bluebird_location_name = 'Bluebird Chelsea'
@@ -474,4 +477,9 @@ class ReviewsTest(unittest.TestCase):
         
 
 if __name__ == '__main__':
-    unittest.main()
+    
+    try:
+        driver = Chrome('./chromedriver')
+        unittest.main()
+    finally:
+        driver.quit()    

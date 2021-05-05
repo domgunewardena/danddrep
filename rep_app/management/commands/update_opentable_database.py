@@ -4,8 +4,7 @@ import os
 from django.core.management.base import BaseCommand, CommandError
 
 import rep_app.scraping.restaurant_urls as restaurant_urls
-
-from rep_app.scraping.scrapers import Opentable
+from rep_app.scraping.scrapers.opentable import Opentable
 
 from selenium import webdriver
 

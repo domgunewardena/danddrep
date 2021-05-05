@@ -5,7 +5,7 @@ from django.core.management.base import BaseCommand, CommandError
 
 import rep_app.restaurant_urls as restaurant_urls
 
-from rep_app.scraping.scrapers import Tripadvisor
+from rep_app.scraping.scrapers.tripadvisor import Tripadvisor
 
 class Command(BaseCommand):
     

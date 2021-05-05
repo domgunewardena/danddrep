@@ -5,7 +5,7 @@ from django.core.management.base import BaseCommand, CommandError
 
 import rep_app.scraping.restaurant_urls as restaurant_urls
 
-from rep_app.scraping.scrapers import SevenRooms
+from rep_app.scraping.scrapers.sevenrooms import SevenRooms
 
 from selenium import webdriver
 

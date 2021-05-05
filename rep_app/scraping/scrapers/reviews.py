@@ -2,7 +2,7 @@ import pandas as pd
 
 import postgresql
 
-from App.rep_project.rep_app.scraping.database import Database
+from .database import Database
 
 class Reviews(Database):
     

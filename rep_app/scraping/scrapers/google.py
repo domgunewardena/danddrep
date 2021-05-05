@@ -4,19 +4,17 @@ import requests
 import json
 
 import pandas as pd
-import psycopg2
-from sqlalchemy import create_engine
 
-from bs4 import BeautifulSoup
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import TimeoutException
+# from bs4 import BeautifulSoup
+# from selenium.webdriver.common.by import By
+# from selenium.webdriver.support.ui import WebDriverWait
+# from selenium.webdriver.support import expected_conditions as EC
+# from selenium.common.exceptions import TimeoutException
 
 import restaurant_urls
 import postgresql
 
-from App.rep_project.rep_app.scraping.database import Database
+from .database import Database
 
 class Google(Database):
     

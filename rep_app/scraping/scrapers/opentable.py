@@ -12,7 +12,7 @@ from selenium.common.exceptions import TimeoutException, ElementNotInteractableE
 
 import restaurant_urls
 
-from App.rep_project.rep_app.scraping.database import Database
+from .database import Database
 
 class Opentable(Database):
     

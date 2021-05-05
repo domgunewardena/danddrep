@@ -2,7 +2,7 @@ from datetime import date, timedelta
 
 from django.core.management.base import BaseCommand, CommandError
 from rep_app.models import Review, Restaurant
-from rep_app.scraping.scrapers import Reviews
+from rep_app.scraping.scrapers.reviews import Reviews
 from rep_app.restaurant_list import restaurant_dict
 
 class Command(BaseCommand):

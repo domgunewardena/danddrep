@@ -6,7 +6,12 @@ from django.core.management.base import BaseCommand, CommandError
 from rep_app.models import Review, Restaurant
 from rep_app.restaurant_list import restaurant_dict
 
-from rep_app.scraping.scrapers import Google, Tripadvisor, Opentable, SevenRooms, Reviews
+from rep_app.scraping.scrapers.google import Google
+from rep_app.scraping.scrapers.tripadvisor import Tripadvisor
+from rep_app.scraping.scrapers.opentable import Opentable
+from rep_app.scraping.scrapers.sevenrooms import SevenRooms
+from rep_app.scraping.scrapers.reviews import Reviews
+
 import rep_app.scraping.restaurant_urls as restaurant_urls
 
 from selenium import webdriver

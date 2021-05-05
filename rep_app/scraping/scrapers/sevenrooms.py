@@ -5,7 +5,7 @@ import pandas as pd
 
 import restaurant_urls
 
-from App.rep_project.rep_app.scraping.database import Database
+from .database import Database
 
 class SevenRooms(Database):
     

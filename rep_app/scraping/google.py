@@ -13,19 +13,19 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 
-import rep_app.scraping.restaurant_urls as restaurant_urls
-import rep_app.scraping.postgresql as postgresql
+import restaurant_urls
+import postgresql
 
-from database import Database
+from App.rep_project.rep_app.scraping.database import Database
 
 class Google(Database):
     
-    def __init__(self, method, driver):
+    def __init__(self, method):
 
         super().__init__('google')
         
         self.method = method
-        self.driver = self.navigate_driver_to_google_maps(driver)
+#         self.driver = self.navigate_driver_to_google_maps(driver)
         
 #       Authentication passwords
         self.refresh_token = os.environ['GMB_REFRESH_TOKEN']
@@ -102,26 +102,6 @@ class Google(Database):
         agree_to_cookies_button_id = 'introAgreeButton'
         
         driver.get(url)
-        
-#         try:
-#             iframe = WebDriverWait(driver, 10).until(
-#                 EC.presence_of_element_located((By.TAG_NAME, iframe_tag))
-#             )
-#             driver.switch_to.frame(iframe)
-            
-#         except:
-#             pass
-            
-#         try:
-#             agree_to_cookies_button = WebDriverWait(driver, 10).until(
-#                 EC.element_to_be_clickable((By.ID, agree_to_cookies_button_id))
-#             )
-#             agree_to_cookies_button.click()
-#         except:
-#             pass
-        
-        return driver
-    
     
     def get_location_soup(self, driver, location_name):
         
@@ -245,7 +225,7 @@ class Google(Database):
 
         return contributor_link + 'place/' + place_id + '/'
 
-    def add_reviews_to_master_list(self, response, location_dict, location_soup, new_reviews):
+    def add_reviews_to_master_list(self, response, location_dict, new_reviews):
 
         reviews = response['reviews'].copy()
         location_name = location_dict['locationName']
@@ -260,20 +240,14 @@ class Google(Database):
 
             review['location'] = location_name
             review['reviewer_display_name'] = review['reviewer']['displayName']
+            review['link'] = restaurant_urls.google_review_urls[location_name]
             
-            try:
-                review_link = self.get_review_link(review, location_dict, location_soup)
-            except IndexError:
-                review['link'] = restaurant_urls.google_review_urls[location_name]
-            else:
-                review['link'] = review_link
-                
+            del(review['reviewer'])
             try:
                 del(review['reviewReply'])
             except:
                 pass
             
-            del(review['reviewer'])
             for key, value in postgresql.tables['rename_columns'][self.table].items():
                 review[value] = review.pop(key)
                 
@@ -292,7 +266,7 @@ class Google(Database):
         
             url = self.get_reviews_url(location_dict)
             location_name = location_dict['locationName']
-            location_soup = self.get_location_soup(self.driver, location_name)
+#             location_soup = self.get_location_soup(self.driver, location_name)
 
             empty_restaurant = self.check_empty_restaurant(location_name)
 
@@ -301,7 +275,7 @@ class Google(Database):
 
             response = self.get_first_response(url)
             reviews_count, pages_count = self.get_review_counts(response)
-            self.add_reviews_to_master_list(response, location_dict, location_soup, master_list)
+            self.add_reviews_to_master_list(response, location_dict, master_list)
 
     #           Looping through review pages when collecting all reviews
             if self.method == 'all':
@@ -312,7 +286,7 @@ class Google(Database):
                         break
                     else:
                         response = self.get_later_response(url, next_page_token)
-                        self.add_reviews_to_master_list(response, location_dict, location_soup, master_list)
+                        self.add_reviews_to_master_list(response, location_dict, master_list)
 
         return master_list    
     

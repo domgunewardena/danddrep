@@ -49,7 +49,7 @@ class Command(BaseCommand):
 
                 self.stdout.write(self.style.SUCCESS('Google scraping started...'))
 
-                google = Google('new', driver)
+                google = Google('new')
                 google.update_database()
 
                 self.stdout.write(self.style.SUCCESS('Google scraping finished'))

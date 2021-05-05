@@ -1,8 +1,8 @@
 import pandas as pd
 
-import rep_app.scraping.postgresql as postgresql
+import postgresql
 
-from database import Database
+from App.rep_project.rep_app.scraping.database import Database
 
 class Reviews(Database):
     

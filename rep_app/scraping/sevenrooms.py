@@ -3,9 +3,9 @@ import requests
 import json
 import pandas as pd
 
-import rep_app.scraping.restaurant_urls as restaurant_urls
+import restaurant_urls
 
-from database import Database
+from App.rep_project.rep_app.scraping.database import Database
 
 class SevenRooms(Database):
     

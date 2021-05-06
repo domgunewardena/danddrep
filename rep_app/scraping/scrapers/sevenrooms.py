@@ -3,7 +3,7 @@ import requests
 import json
 import pandas as pd
 
-import restaurant_urls
+import ..restaurant_urls
 
 from .database import Database
 

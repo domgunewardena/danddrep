@@ -1,6 +1,6 @@
 import pandas as pd
 
-import postgresql
+import ..postgresql_tables as postgresql
 
 from .database import Database
 

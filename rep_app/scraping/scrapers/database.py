@@ -3,7 +3,7 @@ import pandas as pd
 import psycopg2
 from sqlalchemy import create_engine
 
-import ..postgresql_tables as postgresql
+from ...scraping import postgresql_tables as postgresql
 
 class Database():
     

@@ -11,8 +11,8 @@ import pandas as pd
 # from selenium.webdriver.support import expected_conditions as EC
 # from selenium.common.exceptions import TimeoutException
 
-import ..restaurant_urls
-import ..postgresql_tables as postgresql
+from ...scraping import restaurant_urls
+from ...scraping import postgresql_tables as postgresql
 
 from .database import Database
 

@@ -3,7 +3,7 @@ import pandas as pd
 
 from bs4 import BeautifulSoup
 
-import ..restaurant_urls
+from ...scraping import restaurant_urls
 
 from .database import Database
 
